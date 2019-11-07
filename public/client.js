@@ -558,8 +558,12 @@ socket.on('allData', (data) => {
 })
 
 socket.on('serverFrame', () => {
-    mainLoop();
+    setInterval(()=>{
+        mainLoop();
+    }, 1000/60)
 })
+
+
 // socket.on('playerOneDead', (data) => {
 //     playerOneDead = true;
 //     playerOneX = data[0];

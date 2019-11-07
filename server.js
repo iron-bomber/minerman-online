@@ -839,16 +839,14 @@ function startNewRound() {
     io.sockets.emit('allData', allData);
     io.sockets.emit('chooseSprites');
     io.sockets.emit('bomberDataRequest');
-    
-    // playerOneDead = false;
+    io.sockets.emit('serverFrame');
+    // playerOneDead = false;;
     // playerTwoDead = false;
     // playerThreeDead = false;
     // playerFourDead = false;
-
     setInterval(() => {
-        mainLoop();
         io.sockets.emit('allData', allData);
-        io.sockets.emit('serverFrame');
+        mainLoop();
     }, 1000/60)
     
 
