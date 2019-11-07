@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="/socket.io/socket.io.js"></script>
+    <title>MinerMan</title>
+</head>
+<body>
+    <section class="whole">
+<!-- 
+        <div class="start-screen">
+            <h1>DIE NO WAY</h1>
+            <button class="start-btn">PLAY</button>
+        </div> --> 
+        <div class='left'>
+          <h1>Player 1</h1>
+          <h2>Controls</h2>
+          <div class='controls'>
+            <span class="control1">
+                <img src="./images/p1/wasdKeys.png" alt="Use the WASD keys to move">
+                <p>Use the WASD keys to move</p>
+            </span>
+            <span class="control2">
+                <img src="./Images/p1/space-bar.png" alt="Use the spacebar to drop bombs">
+                <p>Use the Spacebar to drop bombs</p>
+            </span>
+          </div>
+          <div class="bomber-info">
+              <h4 class="bomb-pwr" id="p1-pwr">Bomb Power: </h4>
+              <h4 class="bomb-num" id="p1-bmb">Total Bombs: </h4>
+              <h4 class="bombr-spd" id="p1-spd">Speed: </h4>
+          </div>
+        </div>
+        <div class="main-game-container">
+            <canvas id="main-game-board" width="850" height="850"></canvas>
+        </div>
+        <div class='right'>
+          <h1>Player 2</h1>
+          <h2>Controls</h2>
+          <div class='controls'>
+            <span class="control1">
+                <img src="./images/p2/arrowButtonspng.png" alt="Use the arrow keys to move">
+                <p>Use the arrow keys to move</p>
+            </span>
+            <span class="control2">
+                <img src="./Images/p2/shiftpng.png" alt="Use the shift key to drop bombs">
+                <p>Use the shift key to drop bombs</p>
+            </span>
+          </div>
+          <div class="bomber-info">
+              <h4 class="bomb-pwr" id="p2-pwr">Bomb Power: </h4>
+              <h4 class="bomb-num" id="p2-bmb">Total Bombs: </h4>
+              <h4 class="bombr-spd" id="p2-spd">Speed: </h4>
+          </div>
+
+        </div>
+    </section>  
+    <!-- <div class ='phone-controls'>
+        <div class='movement'>
+          <div class='row'>
+            <span class='column'></span>
+            <button class='column'>Up</button>
+            <span class='column'></span>
+          </div>
+          <div class='row'>
+              <button class='column'>Left</button>
+              <span class='column'></span>
+              <button class='column'>Right</button>
+          </div>
+          <div class='row'>
+              <span class='column'></span>
+              <button class='column'>Down</button>
+              <span class='column'></span>
+          </div>
+        </div>
+        <div class='drop-bomb'>
+            <button>Bomb</button>
+        </div>
+    </div>  -->
+    
+    <!-- Button trigger modal -->
+      
+      <!-- Modal -->
+      <!-- <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">BOMB IT UP</h5>
+            </div> -->
+            <!-- <div class="modal-body">
+            </div> -->
+            <!-- <div class="modal-footer">
+              <button type="button" class="btn btn-primary" id="start-game" data-dismiss="modal">Start Game</button>
+            </div>
+          </div>
+        </div>
+      </div> -->
+
+</body>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $(window).on('load',function(){
+            $('#myModal').modal('show');
+        });
+     </script>
+    <script src="globalvars.js"></script>
+    <script src="client.js"></script>
+
+  
+    <!-- <script src="animations.js"></script> -->
+
+</html>

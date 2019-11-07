@@ -1,0 +1,146 @@
+*{
+    margin: 0;
+}
+
+body{
+    margin: 0;
+    padding: 0;
+}
+
+.whole{
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    background-color: #331a00;
+    align-items: center;
+    height: 100vh;
+    width: 100%;
+    transform: scale(0.98);
+    margin: 0;
+    padding: 0;
+}
+
+.main-game-container{
+    width: 850px;
+    height: 850px;
+    transform: scale(0.90);
+}
+
+.right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: #331a00;
+    color: white;
+    border: 1px solid white;
+}
+
+.right img {
+    width: 100px;
+    height: 70px;
+    background-color: white;
+}
+.controls {
+    display: flex;
+    width: 100%;
+    justify-items: space-around;
+}
+
+.controls span {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    width: 50%;
+}
+
+.bomber-info {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.bomb-pwr {
+    color: red;
+    height: 50px;
+}
+.bombr-spd {
+    color: yellow;
+    height: 50px;
+}
+
+.bomb-num {
+    color: cyan;
+    height: 50px;
+}
+
+.left {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    background-color: #331a00;
+    color: white;
+    border: 1px solid white;
+
+}
+.left img {
+    width: 100px;
+    height: 70px;
+    background-color: white;
+}
+
+.start-btn{
+    width: 80px;
+    height: 40px;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.start-screen{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.modal-header{
+    text-align: center;
+}
+
+canvas {
+    transform: scale(0.94);
+}
+
+.phone-controls {
+    width: 100vw;
+    height: 100px;
+    display: flex;
+    justify-content: space-around;
+}
+
+.movement {
+    display: flex;
+    flex-direction: column;
+    width: 50%;
+}
+
+.row {
+    display: flex;
+    width: 100%;
+}
+.column {
+    width: 33%;
+}
+
+.drop-bomb {
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
