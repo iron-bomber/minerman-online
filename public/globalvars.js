@@ -26,12 +26,6 @@ var rock = new Image();
 rock.src="./Images/rock.png";
 
 
-
-
-
-let bombIDs = 0;
-
-
 //Borders
 
 let border = new Image();

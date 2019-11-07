@@ -6,7 +6,7 @@ let bomberData = {
     moveLeft: false,
     moveUp: false,
     moveRight: false,
-    lastPressed: false,
+    lastPressed: 'down',
     bombDropped: false,
     playerID: socket.id,
 }
@@ -30,17 +30,18 @@ socket.on('youHost', () => {
     youHost = true;
 });
 
-socket.on('bomberDataRequest'), () => {
+socket.on('bomberDataRequest', () => {
+    console.log('sending bomber data');
     bomberData.playerID = players.indexOf(socket.id);
+    gameRunning = true;
     commands();
-    mainLoop();
     setInterval(() => {
         socket.emit('bomberData', bomberData);
-    }, 1000/30);
-}
+    }, 1000/60);
+})
 
 // Server sends updated player array
-socket.on('playerArray', (playerArray) => {
+socket.on('playerArray', playerArray => {
     players = playerArray;
 });
 
@@ -99,8 +100,8 @@ class Sprite {
         this.width = 64;
         this.height = height;
         this.scale = 1.3;
-        // this.frameRate = (playerArr[this.bomberID].speed * 1.5) + 10;
         this.frameRate = 7;
+        // this.frameRate = (-playerArr[this.bomberID].speed * 1.5) + 10 ;
         this.totalFrames = this.frameRate*8;
     }
 
@@ -239,6 +240,7 @@ function drawIcons(){
 }
 function commands() {
     if (gameRunning) {
+        console.log('now emitting game movements')
         document.onkeypress = function(e){
             if(e.key === "s" || e.key === "S"){
                 bomberData.moveDown = true;
@@ -495,7 +497,6 @@ let m;
 let playerArr;
 let spriteArr = [];
 socket.on('chooseSprites', () => {
-    console.log('choosing');
     spriteChooser();
     createSprites();
 })
@@ -536,21 +537,28 @@ function createSprites() {
         case 2:
             spriteArr.push(new Sprite(player1.left, player1.right, player1.up, player1.down, player1.death, 'down', player1.playerID, 53));
             spriteArr.push(new Sprite(player2.left, player2.right, player2.up, player2.down, player2.death, 'down', player2.playerID, 53));
+            break;
         case 3:
             spriteArr.push(new Sprite(player1.left, player1.right, player1.up, player1.down, player1.death, 'down', player1.playerID, 53));
             spriteArr.push(new Sprite(player2.left, player2.right, player2.up, player2.down, player2.death, 'down', player2.playerID, 53));
             spriteArr.push(new Sprite(player3.left, player3.right, player3.up, player3.down, player3.death, 'down', player3.playerID, 53));
+            break;
         case 4:
             spriteArr.push(new Sprite(player1.left, player1.right, player1.up, player1.down, player1.death, 'down', player1.playerID, 53));
             spriteArr.push(new Sprite(player2.left, player2.right, player2.up, player2.down, player2.death, 'down', player2.playerID, 53));
             spriteArr.push(new Sprite(player3.left, player3.right, player3.up, player3.down, player3.death, 'down', player3.playerID, 53));
             spriteArr.push(new Sprite(player4.left, player4.right, player4.up, player4.down, player4.death, 'down', player4.playerID, 53));
+            break;
     }
 }
 
 socket.on('allData', (data) => {
     m = data.map;
     playerArr = data.players;
+})
+
+socket.on('serverFrame', () => {
+    mainLoop();
 })
 // socket.on('playerOneDead', (data) => {
 //     playerOneDead = true;
@@ -634,7 +642,4 @@ function mainLoop(){
     // }
 
     //Loop this function 60fps
-    if(!stopMainLoop){
-        requestAnimationFrame(mainLoop);
-    }
 }

@@ -1,3 +1,4 @@
+let bombIDs = 0;
 const players = [];
 const express = require('express');
 const socket = require('socket.io');
@@ -77,7 +78,8 @@ io.on('connection', (socket) => {
             if (pReady.p1 && pReady.p2 && pReady.p3) {
                 startScreenOver = true;
                 setTimeout(() => {
-                    startNewRound();
+                    console.log('in timeout ')
+                    startNewRound()
                 }, 500);
                 clearInterval(startTheGame);
             }
@@ -88,9 +90,9 @@ io.on('connection', (socket) => {
     //In game controls received from user
     socket.on('bomberData', (bomberData) => {
         g.playerArr[bomberData.playerID].moveDown = bomberData.moveDown;
-        g.playerArr[bomberData.playerID].moveDown = bomberData.moveLeft;
-        g.playerArr[bomberData.playerID].moveDown = bomberData.moveUp;
-        g.playerArr[bomberData.playerID].moveDown = bomberData.moveRight;
+        g.playerArr[bomberData.playerID].moveLeft = bomberData.moveLeft;
+        g.playerArr[bomberData.playerID].moveUp = bomberData.moveUp;
+        g.playerArr[bomberData.playerID].moveRight = bomberData.moveRight;
         g.playerArr[bomberData.playerID].lastPressed = bomberData.lastPressed;
         if (bomberData.bombDropped) {
             if(g.playerArr[bomberData.playerID].bombAmmo > 0){
@@ -836,17 +838,20 @@ function startNewRound() {
     };
     io.sockets.emit('allData', allData);
     io.sockets.emit('chooseSprites');
+    io.sockets.emit('bomberDataRequest');
+    
     // playerOneDead = false;
     // playerTwoDead = false;
     // playerThreeDead = false;
     // playerFourDead = false;
-    g.createPlayer(60, 75, 1, 1, 1);
-    g.createPlayer(760, 760, 15, 15, 2);
-    g.createPlayer(60, 760, 15, 15, 3);
-    // setInterval(() => {
-    //     mainLoop();
-    // }, 1000/30)
-    io.sockets.emit('bomberDataRequest');
+
+    setInterval(() => {
+        mainLoop();
+        io.sockets.emit('allData', allData);
+        io.sockets.emit('serverFrame');
+    }, 1000/60)
+    
+
     // console.log(g.playerArr);
     // console.log('emitted choose sprites');
     // console.log('emitting player data');
