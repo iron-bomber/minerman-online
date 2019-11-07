@@ -26,8 +26,30 @@ ctx.imageSmoothingEnabled = false;
 
 let bombIDs = 0;
 
+//Bomb Sprites & vars
+let bomb1 = new Image();
+let bomb2 = new Image();
+let bomb3= new Image();
+let bomb4 = new Image();
+
+bomb1.src="./Images/bombsetc/bomb/bomb1.png";
+bomb2.src="./Images/bombsetc/bomb/bomb2.png";
+bomb3.src="./Images/bombsetc/bomb/bomb3.png";
+bomb4.src="./Images/bombsetc/bomb/bomb4.png";
+
+
+//Powerup sprites
+let powerUp = new Image();
+let speedUp = new Image();
+let bombUp = new Image();
+
+powerUp.src="./Images/pups/powerUp.png"
+bombUp.src="./Images/pups/bombUp.png"
+speedUp.src="./Images/pups/speedUp.png"
+
 
 //Borders
+
 let border = new Image();
 let border2 = new Image();
 let borderBlue = new Image();
@@ -39,12 +61,23 @@ let border2Green = new Image();
 
 border.src="./Images/borders/border.png"
 border2.src="./Images/borders/border2.png"
-borderBlue.src="./Images/borders/borderBlue.png"
-border2Blue.src="./Images/borders/border2Blue.png"
-borderRed.src="./Images/borders/borderRed.png"
-border2Red.src="./Images/borders/border2Red.png"
-borderGreen.src="./Images/borders/borderGreen.png"
-border2Green.src="./Images/borders/border2Green.png"
+borderBlue.src="./Images/borders/border-blue.png"
+border2Blue.src="./Images/borders/border2-blue.png"
+borderRed.src="./Images/borders/border-red.png"
+border2Red.src="./Images/borders/border2-red.png"
+borderGreen.src="./Images/borders/border-green.png"
+border2Green.src="./Images/borders/border2-green.png"
+
+let allTheBorders = {
+    p00: border,
+    p01: border2,
+    p10: borderBlue,
+    p11: border2Blue,
+    p20: borderRed,
+    p21: border2Red,
+    p30: borderGreen,
+    p31: border2Green
+}
 
 //Player one
 
