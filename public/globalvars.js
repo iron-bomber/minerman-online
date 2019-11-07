@@ -26,6 +26,26 @@ ctx.imageSmoothingEnabled = false;
 
 let bombIDs = 0;
 
+
+//Borders
+let border = new Image();
+let border2 = new Image();
+let borderBlue = new Image();
+let border2Blue = new Image();
+let borderRed = new Image();
+let border2Red = new Image();
+let borderGreen = new Image();
+let border2Green = new Image();
+
+border.src="./Images/borders/border.png"
+border2.src="./Images/borders/border2.png"
+borderBlue.src="./Images/borders/borderBlue.png"
+border2Blue.src="./Images/borders/border2Blue.png"
+borderRed.src="./Images/borders/borderRed.png"
+border2Red.src="./Images/borders/border2Red.png"
+borderGreen.src="./Images/borders/borderGreen.png"
+border2Green.src="./Images/borders/border2Green.png"
+
 //Player one
 
 const p1Left = new Image();
@@ -39,15 +59,11 @@ let p3Icon = new Image();
 let p4Icon = new Image();
 let desertBG = new Image();
 let startBtn = new Image();
-let border = new Image();
-let border2 = new Image();
 
 
 
 const spriteHeight1 = 50;
 const iconWidth = 63;
-border2.src="./Images/border2.png"
-border.src="./Images/border.png"
 startBtn.src="./Images/start.png"
 desertBG.src="./Images/desert-bg.jpg"
 p1Icon.src="./Images/p1/p1Icon.png"
