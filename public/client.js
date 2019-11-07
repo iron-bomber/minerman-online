@@ -531,7 +531,7 @@ function createSprites() {
         death: p45,
         playerID: 3
     }
-    switch(players.length) {
+    switch(playerArr.length) {
         case 2:
             spriteArr.push(new Sprite(player1.left, player1.right, player1.up, player1.down, player1.death, 'down', player1.playerID, 53));
             spriteArr.push(new Sprite(player2.left, player2.right, player2.up, player2.down, player2.death, 'down', player2.playerID, 53));
