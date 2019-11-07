@@ -99,7 +99,8 @@ class Sprite {
         this.width = 64;
         this.height = height;
         this.scale = 1.3;
-        this.frameRate = (playerArr[this.bomberID].speed * -1.5) + 10;
+        // this.frameRate = (playerArr[this.bomberID].speed * 1.5) + 10;
+        this.frameRate = 7;
         this.totalFrames = this.frameRate*8;
     }
 
