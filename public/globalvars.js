@@ -16,13 +16,18 @@ let startScreenControls = false;
 // SPRITE VARS
 let lastPressed = 'down';
 let lastPressed2 = 'ArrowDown';
-const ctxTest = document.createElement('canvas');
-ctxTest.setAttribute('width', '850');
-ctxTest.setAttribute('height', '850');
-ctxTest.getContext('2d');
-ctxTest.imageSmoothingEnabled = false;
 const ctx = document.getElementById('main-game-board').getContext('2d');
 ctx.imageSmoothingEnabled = false;
+
+// Map walls and rocks
+var leftWall = new Image();
+leftWall.src="./Images/leftWall.png";
+var rock = new Image();
+rock.src="./Images/rock.png";
+
+
+
+
 
 let bombIDs = 0;
 
