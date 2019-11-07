@@ -256,8 +256,7 @@ function commands() {
             }
             // Drop bomb
             if(e.keyCode === 32){
-                e.preventDefault();
-                bomberData.bombDropped = true;
+                socket.emit('dropABomb', bomberData.playerID);
             }
         }
         document.onkeyup = function(e){
@@ -314,7 +313,34 @@ function commands() {
         }
     }
 }
+
+//Draws each bomb
+function drawBomb(bomb){
+    let newBombSprites = [...bombSprites];
+    if(bomb.bombframeCounter < bomb.bombtotalFrames){
+        // console.log(bomb.bombSprites[bomb.bombssNum], bomb.bombssNum)
+        ctx.drawImage(newBombSprites[bomb.bombssNum], 0, 0, 16, 16, bomb.jGrid*50, bomb.iGrid*50,  50, 50);
+    }
+    if(bomb.bombframeCounter % bomb.bombframeRate === 0){
+        if(bomb.bombssNum < 3){
+            bomb.bombssNum++;
+        }
+    }
+    if(bomb.bombframeCounter == bomb.bombtotalFrames - 1){
+        bomb.bombssNum=0;
+        bomb.bombframeCounter = 0;
+    }
+    bomb.bombframeCounter++;
+}
+
+//Draw explosion
+
 function drawMap() {
+
+    var leftWall = new Image();
+    leftWall.src="./Images/leftWall.png";
+    var rock = new Image();
+    rock.src="./Images/rock.png";
     let xCoord = 0;
     let yCoord = 0;
     for(let i = 0; i < m.bombMap.length; i++) {
@@ -328,10 +354,7 @@ function drawMap() {
             }else if (typeof m.bombMap[i][j] === 'object') {
                 ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
                 //bomb Gray
-                ctx.fillStyle = '#C0C0C0';
-                ctx.beginPath();
-                ctx.arc(xCoord + 25, yCoord + 25, 12, 0, 2 * Math.PI);
-                ctx.fill();
+                drawBomb(m.bombMap[i][j])
                 xCoord += 50;
             } else if (typeof m.bombMap[i][j] === 'number') {
                 // ctx.fillStyle = 'green';
@@ -342,20 +365,18 @@ function drawMap() {
                 xCoord += 50;
             } else if(m.bombMap[i][j] === 'bombpower'){
                 ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
-                ctx.fillStyle = 'red';
-                ctx.fillRect(xCoord+15, yCoord+15, 20, 20);
+                ctx.drawImage(powerUp, 0, 0, 32, 32, xCoord+5, yCoord+5, 40, 40);
+                
                 xCoord += 50;
             }
             else if(m.bombMap[i][j] === 'extrabomb'){
                 ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
-                ctx.fillStyle = 'cyan';
-                ctx.fillRect(xCoord+15, yCoord+15, 20, 20);
+                ctx.drawImage(bombUp, 0, 0, 32, 32, xCoord+5, yCoord+5, 40, 40);
                 xCoord += 50;
             }
             else if(m.bombMap[i][j] === 'speed'){
                 ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
-                ctx.fillStyle = 'yellow';
-                ctx.fillRect(xCoord+15, yCoord+15, 20, 20);
+                ctx.drawImage(speedUp, 0, 0, 32, 32, xCoord+5, yCoord+5, 40, 40);
                 xCoord += 50;    
             }
             else {
@@ -564,26 +585,26 @@ socket.on('serverFrame', () => {
 })
 
 
-// socket.on('playerOneDead', (data) => {
-//     playerOneDead = true;
-//     playerOneX = data[0];
-//     playerOneY = data[1];
-// })
-// socket.on('playerTwoDead', (data) => {
-//     playerTwoDead = true;
-//     playerTwoX = data[0];
-//     playerTwoY = data[1];
-// })
-// socket.on('playerThreeDead', (data) => {
-//     playerThreeDead = true;
-//     playerThreeX = data[0];
-//     playerThreeY = data[1];
-// })
-// socket.on('playerFourDead', (data) => {
-//     playerFourDead = true;
-//     playerFourX = data[0];
-//     playerFourY = data[1];
-// })
+socket.on('playerOneDead', (data) => {
+    playerOneDead = true;
+    playerOneX = data.x;
+    playerOneY = data.y;
+})
+socket.on('playerTwoDead', (data) => {
+    playerTwoDead = true;
+    playerTwoX = data.x;
+    playerTwoY = data.y;
+})
+socket.on('playerThreeDead', (data) => {
+    playerThreeDead = true;
+    playerThreeX = data.x;
+    playerThreeY = data.y;
+})
+socket.on('playerFourDead', (data) => {
+    playerFourDead = true;
+    playerFourX = data.x;
+    playerFourY = data.y;
+})
 function mainLoop(){
     //RESETTING THE GAME
         if (gameComplete){
@@ -595,18 +616,18 @@ function mainLoop(){
     drawMap();
 
     //Death check
-    // if (playerOneDead) {
-    //     spriteArr[0].drawDeath(playerOneX, playerOneY);
-    // }
-    // if (playerTwoDead) {
-    //     spriteArr[1].drawDeath(playerTwoX, playerTwoY);
-    // }
-    // if (playerThreeDead) {
-    //     spriteArr[2].drawDeath(playerThreeX, playerThreeY);
-    // }
-    // if (playerFourDead) {
-    //     spriteArr[3].drawDeath(playerFourX, playerFourY);
-    // }
+    if (playerOneDead) {
+        spriteArr[0].drawDeath(playerOneX, playerOneY);
+    }
+    if (playerTwoDead) {
+        spriteArr[1].drawDeath(playerTwoX, playerTwoY);
+    }
+    if (playerThreeDead) {
+        spriteArr[2].drawDeath(playerThreeX, playerThreeY);
+    }
+    if (playerFourDead) {
+        spriteArr[3].drawDeath(playerFourX, playerFourY);
+    }
 
     //PLAYER SPRITES
     ////////////////////////////////////////////////////////////////////////////////////////////

@@ -15,18 +15,18 @@ app.use(express.static('public'));
 
 // // Socket setup
 let io = socket(server);
-// // let playerOneDead = false;
-// // let playerTwoDead = false;
-// // let playerThreeDead = false;
-// // let playerFourDead = false;
-// // let playerOneX;
-// // let playerOneY;
-// // let playerTwoX;
-// // let playerTwoY;
-// // let playerThreeX;
-// // let playerThreeY;
-// // let playerFourX;
-// // let playerFourY;
+let playerOneDead = false;
+let playerTwoDead = false;
+let playerThreeDead = false;
+let playerFourDead = false;
+let playerOneX;
+let playerOneY;
+let playerTwoX;
+let playerTwoY;
+let playerThreeX;
+let playerThreeY;
+let playerFourX;
+let playerFourY;
 // // let numOfPlayers;
 let playersLeft;
 // // let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
@@ -94,19 +94,19 @@ io.on('connection', (socket) => {
         g.playerArr[bomberData.playerID].moveUp = bomberData.moveUp;
         g.playerArr[bomberData.playerID].moveRight = bomberData.moveRight;
         g.playerArr[bomberData.playerID].lastPressed = bomberData.lastPressed;
-        if (bomberData.bombDropped) {
-            if(g.playerArr[bomberData.playerID].bombAmmo > 0){
-                if (m.bombMap[g.playerArr[bomberData.playerID].iGrid][g.playerArr[bomberData.playerID].jGrid] === 'free') {
-                    // Create new bomb (player, player Y, player X, player bomb power, bomb ID)
-                    let newBomb = (new Bomb(g.playerArr[bomberData.playerID], g.playerArr[bomberData.playerID].iGrid, g.playerArr[bomberData.playerID].jGrid, g.playerArr[bomberData.playerID].bombPower, bombIDs));
-                    bombIDs++;
-                    newBomb.gridPlacer();
-                    newBomb.timerExplode();
-                    g.playerArr[bomberData.playerID].bombAmmo -= 1;
-                }
-            }    
-        }
     });
+    socket.on('dropABomb', (data) => {
+        if(g.playerArr[data].bombAmmo > 0){
+            if (m.bombMap[g.playerArr[data].iGrid][g.playerArr[data].jGrid] === 'free') {
+                // Create new bomb (player, player Y, player X, player bomb power, bomb ID)
+                let newBomb = (new Bomb(g.playerArr[data], g.playerArr[data].iGrid, g.playerArr[data].jGrid, g.playerArr[data].bombPower, bombIDs));
+                bombIDs++;
+                newBomb.gridPlacer();
+                newBomb.timerExplode();
+                g.playerArr[data].bombAmmo -= 1;
+            }
+        }   
+    })
 
 
     // if (startGame) {
@@ -133,6 +133,10 @@ class Bomb {
         this.power = power;
         this.exploding = false;
         this.bombID = bombID;
+        this.bombssNum = 0;
+        this.bombframeCounter = 0;
+        this.bombframeRate = 10;
+        this.bombtotalFrames = this.bombframeRate*4;
     }
 
     explode() {
@@ -269,6 +273,8 @@ class Bomb {
             }
         }
         this.owner.bombAmmo +=1;
+
+
         // Sets spaces back into free after bomb blast
         setTimeout(() => {
             // Checks to see if the space has been overwritten by new bomb blast
@@ -329,22 +335,24 @@ class Bomb {
             }
             // Deletes the bomb
             delete this;
-        }, 300);
+        }, 300)
     }
-        timerExplode () {
-            setTimeout(() => {
-                // Explodes the bomb if it hasn't yet been triggered by another
-                if (!this.exploding && !gameReset) {
-                    this.explode();
-                    this.exploding = true;
-                }
-            }, 3000)       
-        }
-    
-        gridPlacer () {
-            m.bombMap[this.iGrid][this.jGrid] = this;
-        }
-    
+
+
+    timerExplode () {
+        setTimeout(() => {
+            // Explodes the bomb if it hasn't yet been triggered by another
+            if (!this.exploding && !gameReset) {
+                this.explode();
+                this.exploding = true;
+            }
+        }, 3000)       
+    }
+
+    gridPlacer () {
+        m.bombMap[this.iGrid][this.jGrid] = this;
+    }
+
 }
 
 
@@ -786,22 +794,22 @@ function mainLoop(){
             }
         }
     }
-    // if (playerOneDead) {
-    //     let deathCoords1 = [playerOneX, playerOneY];
-    //     io.sockets.emit('playerOneDead', deathCoords1);
-    // }
-    // if (playerTwoDead) {
-    //     let deathCoords2 = [playerTwoX, playerTwoY];
-    //     io.sockets.emit('playerTwoDead', deathCoords2);
-    // }
-    // if (playerThreeDead) {
-    //     let deathCoords3 = [playerThreeX, playerThreeY];
-    //     io.sockets.emit('playerThreeDead', deathCoords3);
-    // }
-    // if (playerFourDead) {
-    //     let deathCoords4 = [playerFourX, playerFourY];
-    //     io.sockets.emit('playerFourDead', deathCoords4);
-    // }
+    if (playerOneDead) {
+        let deathCoords1 = {x: playerOneX, y: playerOneY};
+        io.sockets.emit('playerOneDead', deathCoords1);
+    }
+    if (playerTwoDead) {
+        let deathCoords2 = {x: playerTwoX, y: playerTwoY};
+        io.sockets.emit('playerTwoDead', deathCoords2);
+    }
+    if (playerThreeDead) {
+        let deathCoords3 = {x: playerThreeX, y: playerThreeY};
+        io.sockets.emit('playerThreeDead', deathCoords3);
+    }
+    if (playerFourDead) {
+        let deathCoords4 = {x: playerFourX, y: playerFourY};
+        io.sockets.emit('playerFourDead', deathCoords4);
+    }
     // if(gameComplete == true){
     //     //EVENTUALLY GO TO SCORE SCREEN
     //     console.log('happ')
@@ -832,6 +840,7 @@ function startNewRound() {
     g.createPlayer(60, 75, 1, 1, 1);
     g.createPlayer(760, 760, 15, 15, 2);
     g.createPlayer(60, 760, 15, 15, 3);
+    m.generateRocks();
     allData = {
         map: m,
         players: g.playerArr
@@ -848,17 +857,11 @@ function startNewRound() {
         io.sockets.emit('allData', allData);
         mainLoop();
     }, 1000/60)
-    
-
-    // console.log(g.playerArr);
-    // console.log('emitted choose sprites');
-    // console.log('emitting player data');
 
 
 
     // numOfPlayers = g.playerArr.length;
     // playersLeft = g.playerArr.length;
-    // m.generateRocks();
     // setTimeout(() => {
     //     gameReset = false;
     // }, 2999);

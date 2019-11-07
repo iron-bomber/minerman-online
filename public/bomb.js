@@ -6,6 +6,11 @@ class Bomb {
         this.power = power;
         this.exploding = false;
         this.bombID = bombID;
+        this.bombssNum = 0;
+        this.bombframeCounter = 0;
+        this.bombframeRate = 10;
+        this.bombtotalFrames = this.bombframeRate*4;
+        this.bombSprites = [bomb1, bomb2, bomb3, bomb4];
     }
 
     explode() {

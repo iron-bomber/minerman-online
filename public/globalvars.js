@@ -4,10 +4,16 @@ let gameComplete = false;
 let stopMainLoop = false;
 let playerOneDead = false;
 let playerTwoDead = false;
+let playerThreeDead = false;
+let playerFourDead = false;
 let playerOneX;
 let playerOneY;
 let playerTwoX;
 let playerTwoY;
+let playerThreeX;
+let playerThreeY;
+let playerFourX;
+let playerFourY;
 let numOfPlayers;
 let playersLeft;
 let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
@@ -24,6 +30,29 @@ var leftWall = new Image();
 leftWall.src="./Images/leftWall.png";
 var rock = new Image();
 rock.src="./Images/rock.png";
+
+//Bomb Sprites & vars
+let bomb1 = new Image();
+let bomb2 = new Image();
+let bomb3= new Image();
+let bomb4 = new Image();
+
+bomb1.src="./Images/bombsetc/bomb/bomb1.png";
+bomb2.src="./Images/bombsetc/bomb/bomb2.png";
+bomb3.src="./Images/bombsetc/bomb/bomb3.png";
+bomb4.src="./Images/bombsetc/bomb/bomb4.png";
+
+
+let bombSprites = [bomb1, bomb2, bomb3, bomb4];
+
+//Powerup sprites
+let powerUp = new Image();
+let speedUp = new Image();
+let bombUp = new Image();
+
+powerUp.src="./Images/pups/powerUp.png"
+bombUp.src="./Images/pups/bombUp.png"
+speedUp.src="./Images/pups/speedUp.png"
 
 
 //Borders
