@@ -24,10 +24,16 @@ socket.on('startControls', (data) => {
     }
 })
 
+// Server tells client they are host
 socket.on('youHost', () => {
+    console.log('you are the host')
     youHost = true;
 });
 
+
+socket.on('playerArray', (playerArray) => {
+    players = playerArray;
+});
 
 // Loop gets started when startScreen is emitted by server
 function startLoop(){

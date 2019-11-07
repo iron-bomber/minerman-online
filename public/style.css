@@ -117,7 +117,7 @@ canvas {
     transform: scale(0.94);
 }
 
-.phone-controls {
+/* .phone-controls {
     width: 100vw;
     height: 100px;
     display: flex;
@@ -143,4 +143,4 @@ canvas {
     display: flex;
     justify-content: center;
     align-items: center;
-}
+} */

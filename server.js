@@ -50,6 +50,7 @@ io.on('connection', (socket) => {
     }
     if (players.length <=4 && players.length > 0) {
         io.sockets.emit('startControls', true);
+        io.sockets.emit('playerArray', (players));
     }
     socket.on('newSprite', (sprite) => {
         g.spriteArr[players.indexOf(sprite[0])].push(sprite[1]);
