@@ -4,10 +4,16 @@ let gameComplete = false;
 let stopMainLoop = false;
 let playerOneDead = false;
 let playerTwoDead = false;
+let playerThreeDead = false;
+let playerFourDead = false;
 let playerOneX;
 let playerOneY;
 let playerTwoX;
 let playerTwoY;
+let playerThreeX;
+let playerThreeY;
+let playerFourX;
+let playerFourY;
 let numOfPlayers;
 let playersLeft;
 let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
@@ -16,15 +22,14 @@ let startScreenControls = false;
 // SPRITE VARS
 let lastPressed = 'down';
 let lastPressed2 = 'ArrowDown';
-const ctxTest = document.createElement('canvas');
-ctxTest.setAttribute('width', '850');
-ctxTest.setAttribute('height', '850');
-ctxTest.getContext('2d');
-ctxTest.imageSmoothingEnabled = false;
 const ctx = document.getElementById('main-game-board').getContext('2d');
 ctx.imageSmoothingEnabled = false;
 
-let bombIDs = 0;
+// Map walls and rocks
+var leftWall = new Image();
+leftWall.src="./Images/leftWall.png";
+var rock = new Image();
+rock.src="./Images/rock.png";
 
 //Bomb Sprites & vars
 let bomb1 = new Image();
@@ -37,6 +42,8 @@ bomb2.src="./Images/bombsetc/bomb/bomb2.png";
 bomb3.src="./Images/bombsetc/bomb/bomb3.png";
 bomb4.src="./Images/bombsetc/bomb/bomb4.png";
 
+
+let bombSprites = [bomb1, bomb2, bomb3, bomb4];
 
 //Powerup sprites
 let powerUp = new Image();
@@ -172,3 +179,26 @@ let p42;
 let p43;
 let p44;
 let p45;
+
+
+//Idle object
+
+let idleObject = {
+    p1up: p1Up,
+    p1down: p1Down,
+    p1left: p1Left,
+    p1right: p1Right,
+    p2up: p2Up,
+    p2down: p2Down,
+    p2left: p2Left,
+    p2right: p2Right,
+    p3up: p3Up,
+    p3down: p3Down,
+    p3left: p3Left,
+    p3right: p3Up,
+    p4up: p4Up,
+    p4down: p4Down,
+    p4left: p4Left,
+    p4right: p4Right,
+
+}

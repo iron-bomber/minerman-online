@@ -34,7 +34,7 @@ class Sprite {
                 break;
         }
         if(this.frameCounter < this.totalFrames){
-            ctx.drawImage(this.idleDecider, 0, 0, this.width, this.height, g.playerArr[this.bomberID].x - 22, g.playerArr[this.bomberID].y - 34, this.width*this.scale, this.height*this.scale);
+            ctx.drawImage(this.idleObject, 0, 0, this.width, this.height, g.playerArr[this.bomberID].x - 22, g.playerArr[this.bomberID].y - 34, this.width*this.scale, this.height*this.scale);
         }
         if(this.frameCounter === this.totalFrames - 1){
             this.ssNum=0;
