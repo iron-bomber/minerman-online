@@ -407,6 +407,34 @@ socket.on('lastPressed', (data)=>{
     spriteArr[data.id].lastPressed = data.lp;
 })
 
+// socket.on('newBombSprite', (data)=>{
+//     let done = 0;
+//     let ssNum = 0;
+//     let frameRate = 20;
+//     let totalFrames = frameRate*5;
+//     let frameCounter = 0;
+//     let thisInterval = setInterval(()=>{
+//         if(done == 13){
+//             clearInterval(thisInterval);
+//         }
+//         if(frameCounter < totalFrames){
+//             // console.log(Sprites[ssNum], ssNum)
+//             ctx.drawImage(bombSprites[ssNum], 0, 0, 16, 16, data.jGrid*50, data.iGrid*50,  50, 50);
+//         }
+//         if(frameCounter % frameRate === 0){
+//             if(ssNum < 3){
+//                 ssNum++;
+//             }
+//         }
+//         if(frameCounter == totalFrames - 1){
+//             ssNum=0;
+//             frameCounter = 0;
+//         }
+//         done++;
+//         frameCounter++;
+//     },230)
+// })
+
 //Draws each bomb
 function drawBomb(bomb){
     let newBombSprites = [...bombSprites];
@@ -430,10 +458,6 @@ function drawBomb(bomb){
 
 function drawMap() {
 
-    var leftWall = new Image();
-    leftWall.src="./Images/leftWall.png";
-    var rock = new Image();
-    rock.src="./Images/rock.png";
     let xCoord = 0;
     let yCoord = 0;
     for(let i = 0; i < m.bombMap.length; i++) {
@@ -448,18 +472,18 @@ function drawMap() {
                 ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
                 //bomb Gray
                 drawBomb(m.bombMap[i][j])
+                // ctx.drawImage(bombSprites[3], 0, 0, 16, 16, xCoord, yCoord, 50, 50);
                 xCoord += 50;
             } else if (typeof m.bombMap[i][j] === 'number') {
                 // ctx.fillStyle = 'green';
                 // ctx.fillRect(xCoord, yCoord, 50, 50);
                 //explosion orange
-                ctx.fillStyle = '#FF9900';
-                ctx.fillRect(xCoord, yCoord, 50, 50);
+                ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
+                ctx.drawImage(explosion, 0, 0, 16, 16, xCoord, yCoord, 50, 50);
                 xCoord += 50;
             } else if(m.bombMap[i][j] === 'bombpower'){
                 ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
                 ctx.drawImage(powerUp, 0, 0, 32, 32, xCoord+5, yCoord+5, 40, 40);
-                
                 xCoord += 50;
             }
             else if(m.bombMap[i][j] === 'extrabomb'){
@@ -821,6 +845,7 @@ class Sound{
 
 let sound = new Sound();
 
+//Sound effect socket.ons
 socket.on('explode', ()=>{
     let exp = document.getElementById('explode').play();
     exp.volume = ".8"
@@ -837,4 +862,13 @@ socket.on('speedUp', ()=>{
 socket.on('powerUp', ()=>{
     let power = document.getElementById('powerUp').play()
     power.volume = ".5"
+})
+
+
+//Player score socket updates
+socket.on('playerScores', (data)=>{
+    document.getElementById('p1score').innerHtml = data.p1
+    document.getElementById('p2score').innerHtml = data.p2
+    document.getElementById('p3score').innerHtml = data.p3
+    document.getElementById('p4score').innerHtml = data.p4
 })

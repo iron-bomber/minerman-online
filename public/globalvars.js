@@ -33,6 +33,8 @@ var leftWall = new Image();
 leftWall.src="./Images/leftWall.png";
 var rock = new Image();
 rock.src="./Images/rock.png";
+var explosion = new Image();
+explosion.src="./Images/bombsetc/explosions/bomb2.png"
 
 //Bomb Sprites & vars
 let bomb1 = new Image();

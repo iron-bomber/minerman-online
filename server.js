@@ -92,6 +92,10 @@ io.on('connection', (socket) => {
                 newBomb.gridPlacer();
                 newBomb.timerExplode();
                 g.playerArr[data].bombAmmo -= 1;
+                // io.sockets.emit('newBombSprite', {
+                //     iGrid: newBomb.iGrid,
+                //     jGrid: newBomb.jGrid,
+                // })
             }
         }   
     })
