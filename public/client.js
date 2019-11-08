@@ -36,7 +36,6 @@ socket.on('bomberDataRequest', () => {
     gameRunning = true;
     commands();
     setInterval(() => {
-        console.log(bomberData)
         socket.emit('bomberData', bomberData);
     }, 1000/60);
 })
@@ -107,8 +106,6 @@ class Sprite {
     }
 
     drawImgIdle(){
-        // console.log(this.up, this.down, this.left, this.right)
-        // console.log(this.lastPressed)
         switch(this.lastPressed){
             case "up":
                 this.idleDecider = this.up;
@@ -125,7 +122,6 @@ class Sprite {
                 break;
         }
         if(this.frameCounter < this.totalFrames){
-            // console.log(this.lastPressed)
             ctx.drawImage(this.idleDecider, 0, 0, this.width, this.height, playerArr[this.bomberID].x - 22, playerArr[this.bomberID].y - 34, this.width*this.scale, this.height*this.scale);
         }
         if(this.frameCounter === this.totalFrames - 1){
@@ -325,9 +321,7 @@ function commands() {
 
 //Updates sprite array
 socket.on('lastPressed', (data)=>{
-    console.log(data.lp)
     spriteArr[data.id].lastPressed = data.lp;
-    console.log(spriteArr[data.id].lastPressed)
 })
 
 //Draws each bomb
@@ -626,6 +620,11 @@ function mainLoop(){
             commands();
         }
     //END RESETTING
+
+    if(!sound.songPlaying){
+        sound.playGameMusic();
+    }
+
     //Clear canvas
     ctx.clearRect(0, 0, 750, 750);
     drawMap();
@@ -694,6 +693,7 @@ class Sound{
         this.bombUp = new Audio('/public/Sound/bombUpmp3')
         this.speedUp = new Audio('/public/Sound/speedUp.mp3')
         this.explode = new Audio('/public/Sound/explode.mp3')
+        this.songPlaying = false;
     }
 
     //Menu movement sound
@@ -711,10 +711,14 @@ class Sound{
 
     //In game music control
     playGameMusic(){
-        this.gameMusic.play()
+
+    // this.gameMusic.crossOrigin = 'anonymous';
+    let gm = document.getElementById('gameMusic').play();
+    gm.volume = .2;
     }
     pauseGameMusic(){
         this.gameMusic.pause()
+        this.songPlaying = false;
     }
 
     //Sound effect control
@@ -731,3 +735,12 @@ class Sound{
         this.explode.play()
     }
 }
+
+let sound = new Sound();
+
+socket.on('explode', ()=>{
+    document.getElementById('explode').play();
+    setTimeout(()=>{
+    // document.getElementById('explode').pause();
+    },300)
+})

@@ -355,6 +355,7 @@ class Bomb {
             // Explodes the bomb if it hasn't yet been triggered by another
             if (!this.exploding && !gameReset) {
                 this.explode();
+                io.sockets.emit('explode')
                 this.exploding = true;
             }
         }, 3000)       
@@ -866,7 +867,7 @@ function startNewRound() {
     // playerFourDead = false;
     setInterval(() => {
         io.sockets.emit('allData', allData);
-        console.log(allData.players)
+        // console.log(allData.players)
         mainLoop();
     }, 1000/60)
 
