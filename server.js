@@ -1,3 +1,4 @@
+let gameReset = false;
 let bombIDs = 0;
 const players = [];
 const express = require('express');
@@ -30,7 +31,8 @@ let playerFourY;
 // // let numOfPlayers;
 let playersLeft;
 // // let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
-// // let gameReset = false;
+
+
 // // SPRITE VARS
 // // let lastPressed = 'down';
 // // let lastPressed2 = 'ArrowDown';
