@@ -13,31 +13,35 @@ let bomberData = {
 
 // Start screen stuff
 let s;
-socket.on('startScreen', (start) => {
+let sel;
+
+socket.on('selectYourSprite', () => {
+    selectNumOfPlayers = false;
+    spriteSelectScreen = true;
+    commands();
+})
+socket.on('spriteSelectScreen', (start) => {
     s = start;
     startLoop();
-})
-socket.on('startControls', (data) => {
-    if (!startScreenControls) {
-        commands();
-        startScreenControls = data;
-    }
 })
 
 // Server tells client they are host
 socket.on('youHost', () => {
     console.log('you are the host')
-    youHost = true;
+    host = true;
+    commands();
 });
 
 socket.on('bomberDataRequest', () => {
-    console.log('sending bomber data');
-    bomberData.playerID = players.indexOf(socket.id);
-    gameRunning = true;
-    commands();
-    setInterval(() => {
-        socket.emit('bomberData', bomberData);
-    }, 1000/60);
+    if (players.indexOf(socket.id) < sel.numOfPlayers){
+        console.log('sending bomber data');
+        bomberData.playerID = players.indexOf(socket.id);
+        gameRunning = true;
+        commands();
+        setInterval(() => {
+            socket.emit('bomberData', bomberData);
+        }, 1000/60);
+    }
 })
 
 // Server sends updated player array
@@ -45,11 +49,15 @@ socket.on('playerArray', playerArray => {
     players = playerArray;
 });
 
-// Loop gets started when startScreen is emitted by server
+
+socket.on('selectNumOfPlayers', (data) => {
+    sel = data;
+    selectLoop();
+})
+// Loop gets started when spriteSelectScreen is emitted by server
 function startLoop(){
     ctx.clearRect(0, 0, 850, 850);
     ctx.drawImage(desertBG, 0, 0, 750, 992, 0, 0, 850, 850);
-
     //Draw Icons
     drawIcons();
 
@@ -61,6 +69,39 @@ function startLoop(){
     }    
     //Draw start button
     ctx.drawImage(startBtn, 0, 0, 380, 170, 270, 550, 300, 130);
+}
+function drawBorderSelect(player){
+        
+    if(player.exists == true){
+        if(player.position == 1){
+            ctx.drawImage(borderBlue, 0, 0, 560, 939, 170, 290, 500, 70);//Top Left
+        }
+        if(player.position == 2){
+            ctx.drawImage(borderBlue, 0, 0, 560, 939, 170, 440, 500, 70);//Top Right
+        }
+        if(player.position == 3){
+            ctx.drawImage(borderBlue, 0, 0, 560, 939, 170, 590, 500, 70);//Bottom Left
+        }
+    }
+}
+function selectLoop(){
+    // console.log('select loop')
+    ctx.clearRect(0, 0, 850, 850);
+    ctx.drawImage(desertBG, 0, 0, 750, 992, 0, 0, 850, 850);
+
+    //Minerman Logo
+    ctx.drawImage(minerman, 0, 0, 180, 36, 115, 100, 600, 100);
+
+    //Draw Player# options
+    ctx.drawImage(players2, 0, 0, 374, 50, 240, 300, 374, 50)
+    ctx.drawImage(players3, 0, 0, 374, 50, 240, 450, 374, 50)
+    ctx.drawImage(players4, 0, 0, 374, 50, 240, 600, 374, 50)
+
+
+    //Draw player borders
+    drawBorderSelect(sel.p1);
+    // console.log(gameRunning)
+
 }
 function drawBorder(player, i){    
     if(player.exists == true){
@@ -273,46 +314,91 @@ function commands() {
                 bomberData.moveRight = false;
             }
         }
-    } else {
-        document.onkeypress = function(e){
-            if(e.key === "s" || e.key === "S"){
-                socket.emit('select',
-                {
-                    key: 's',
-                    socketID: socket.id
-                });
+    } else if (selectNumOfPlayers) {
+        console.log(host)
+        if (host) {
+            //Sending select character controls to server
+            document.onkeypress = function(e){
+                if(e.key === "s" || e.key === "S"){
+                    console.log('emit s')
+                    socket.emit('selectCommands',
+                    {
+                        key: 's'
+                    });
+                }
+                if(e.key === "w" || e.key === "W"){
+                    socket.emit('selectCommands',
+                    {
+                        key: 'w'
+                    });
+                }
+                if(e.key === "a" || e.key === "A"){
+                    socket.emit('selectCommands',
+                    {
+                        key: 'a'
+                    });
+                }
+                if(e.key === "d" || e.key === "D"){
+                    socket.emit('selectCommands',
+                    {
+                        key: 'd'
+                    });
+                }
+                if(e.keyCode === 32) {
+                    socket.emit('selectCommands',
+                    {
+                        key: 'spacebar',
+                    });
+                }
             }
-            if(e.key === "w" || e.key === "W"){
-                socket.emit('select',
-                {
-                    key: 'w',
-                    socketID: socket.id
-                });
-            }
-            if(e.key === "a" || e.key === "A"){
-                socket.emit('select',
-                {
-                    key: 'a',
-                    socketID: socket.id
-                });
-            }
-            if(e.key === "d" || e.key === "D"){
-                socket.emit('select',
-                {
-                    key: 'd',
-                    socketID: socket.id
-                });
-            }
-            if(e.keyCode === 32) {
-                socket.emit('select',
-                {
-                    key: 'spacebar',
-                    socketID: socket.id
-                });
+        }
+
+    } else if (spriteSelectScreen) {
+        console.log('startscreen input')
+        if (players.indexOf(socket.id) < sel.numOfPlayers){
+            //Sending select character controls to server
+            document.onkeypress = function(e){
+                if(e.key === "s" || e.key === "S"){
+                    console.log('startscreen s')
+                    socket.emit('selectingSprite',
+                    {
+                        key: 's',
+                        socketID: socket.id
+                    });
+                }
+                if(e.key === "w" || e.key === "W"){
+                    socket.emit('selectingSprite',
+                    {
+                        key: 'w',
+                        socketID: socket.id
+                    });
+                }
+                if(e.key === "a" || e.key === "A"){
+                    socket.emit('selectingSprite',
+                    {
+                        key: 'a',
+                        socketID: socket.id
+                    });
+                }
+                if(e.key === "d" || e.key === "D"){
+                    socket.emit('selectingSprite',
+                    {
+                        key: 'd',
+                        socketID: socket.id
+                    });
+                }
+                if(e.keyCode === 32) {
+                    socket.emit('selectingSprite',
+                    {
+                        key: 'spacebar',
+                        socketID: socket.id
+                    });
+                }
             }
         }
     }
 }
+
 
 //Draws each bomb
 function drawBomb(bomb){

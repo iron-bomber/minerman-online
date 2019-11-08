@@ -1,5 +1,7 @@
-let youHost = false;
+let host = false;
 let gameRunning = false;
+let spriteSelectScreen = false;
+let selectNumOfPlayers = true;
 let gameComplete = false;
 let stopMainLoop = false;
 let playerOneDead = false;
@@ -179,3 +181,27 @@ let p42;
 let p43;
 let p44;
 let p45;
+
+//Explosion Sprites
+let exp1 = new Image();
+let exp2 = new Image();
+let exp3 = new Image();
+let exp4 = new Image();
+let exp5 = new Image();
+
+exp1.src="/Images/bombsetc/explosions/bomb1.png"
+exp2.src="/Images/bombsetc/explosions/bomb2.png"
+exp3.src="/Images/bombsetc/explosions/bomb3.png"
+exp4.src="/Images/bombsetc/explosions/bomb4.png"
+exp5.src="/Images/bombsetc/explosions/bomb5.png"
+
+//Mineman logo & #player imgs
+let minerman = new Image();
+let players2 = new Image();
+let players3 = new Image();
+let players4 = new Image();
+
+minerman.src="/Images/minerman.png"
+players2.src="/Images/2p.png"
+players3.src="/Images/3p.png"
+players4.src="/Images/4p.png"
