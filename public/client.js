@@ -100,7 +100,6 @@ function selectLoop(){
 
     //Draw player borders
     drawBorderSelect(sel.p1);
-    // console.log(gameRunning)
 
 }
 function drawBorder(player, i){    
@@ -136,7 +135,7 @@ class Sprite {
         this.lastPressed = lastPressed;
         this.bomberID = bomberID;
         this.ssNum = 0;
-        this.idleDecider;
+        this.idleDecider = 'down';
         this.frameCounter = 0;
         this.width = 64;
         this.height = height;
@@ -150,6 +149,7 @@ class Sprite {
         switch(this.lastPressed){
             case "up":
                 this.idleDecider = this.up;
+                console.log(this.idleDecider)
                 break;
             case "down":
                 this.idleDecider = this.down;
@@ -303,15 +303,19 @@ function commands() {
         document.onkeyup = function(e){
             if(e.key === "s" || e.key === "S"){
                 bomberData.moveDown = false;
+                bomberData.lastPressed = 'down'
             }
             if(e.key === "w" || e.key === "W"){
                 bomberData.moveUp = false;
+                bomberData.lastPressed = 'up';
             }
             if(e.key === "a" || e.key === "A"){
                 bomberData.moveLeft = false;
+                bomberData.lastPressed = 'left';
             }
             if(e.key === "d" || e.key === "D"){
                 bomberData.moveRight = false;
+                bomberData.lastPressed = 'right';
             }
         }
     } else if (selectNumOfPlayers) {
@@ -354,8 +358,8 @@ function commands() {
         }
 
     } else if (spriteSelectScreen) {
-        console.log('startscreen input')
         if (players.indexOf(socket.id) < sel.numOfPlayers){
+            console.log('startscreen input')
             //Sending select character controls to server
             document.onkeypress = function(e){
                 if(e.key === "s" || e.key === "S"){
@@ -399,6 +403,10 @@ function commands() {
     }
 }
 
+//Updates sprite array
+socket.on('lastPressed', (data)=>{
+    spriteArr[data.id].lastPressed = data.lp;
+})
 
 //Draws each bomb
 function drawBomb(bomb){
@@ -670,7 +678,6 @@ socket.on('serverFrame', () => {
     }, 1000/60)
 })
 
-
 socket.on('playerOneDead', (data) => {
     playerOneDead = true;
     playerOneX = data.x;
@@ -697,6 +704,11 @@ function mainLoop(){
             commands();
         }
     //END RESETTING
+
+    if(!sound.songPlaying){
+        sound.playGameMusic();
+    }
+
     //Clear canvas
     ctx.clearRect(0, 0, 750, 750);
     drawMap();
@@ -754,3 +766,65 @@ function mainLoop(){
 
     //Loop this function 60fps
 }
+
+
+class Sound{
+    constructor(){
+        this.menuMove = new Audio('/public/Sound/menuMove.mp3')
+        this.menuMusic = new Audio('/public/Sound/menuMusic.mp3')
+        this.gameMusic = new Audio('/public/Sound/gameMusic.mp3')
+        this.powerUp = new Audio('/public/Sound/powerUp.mp3')
+        this.bombUp = new Audio('/public/Sound/bombUpmp3')
+        this.speedUp = new Audio('/public/Sound/speedUp.mp3')
+        this.explode = new Audio('/public/Sound/explode.mp3')
+        this.songPlaying = false;
+    }
+
+    //Menu movement sound
+    playMove(){
+        this.menuMove.play()
+    }
+
+    //Menu Music control
+    playMenuMusic(){
+        this.menuMusic.play()
+    }
+    pauseMenuMusic(){
+        this.menuMusic.pause()
+    }
+
+    //In game music control
+    playGameMusic(){
+
+    // this.gameMusic.crossOrigin = 'anonymous';
+    let gm = document.getElementById('gameMusic').play();
+    gm.volume = .2;
+    }
+    pauseGameMusic(){
+        this.gameMusic.pause()
+        this.songPlaying = false;
+    }
+
+    //Sound effect control
+    playBombUp(){
+        this.bombUp.play()
+    }
+    playPowerUp(){
+        this.powerUp.play()
+    }
+    playSpeedUp(){
+        this.speedUp.play()
+    }
+    playExplode(){
+        this.explode.play()
+    }
+}
+
+let sound = new Sound();
+
+socket.on('explode', ()=>{
+    document.getElementById('explode').play();
+    setTimeout(()=>{
+    // document.getElementById('explode').pause();
+    },300)
+})

@@ -6,9 +6,9 @@ const socket = require('socket.io');
 
 // App setup
 const app = express();
-const PORT = process.env.PORT || 4000
+const PORT = process.env.PORT || 3000
 const server = app.listen(PORT, () => {
-    console.log('listening to requests, port 4000');
+    console.log('listening to requests, port 3000');
 });
 
 //Static files
@@ -50,6 +50,11 @@ io.on('connection', (socket) => {
     console.log('connection made', new Date());
     console.log(socket.id);
     players.push(socket.id);
+    if (spriteSelect) {
+        io.to(socket.id).emit('selectNumOfPlayers', sel);
+        io.to(socket.id).emit('selectYourSprite');
+    }
+    io.sockets.emit('playerArray', (players));
     if (players.length === 1) {
         console.log('select screen');
         let selectNumOfPlayersInterval = setInterval(() => {
@@ -62,24 +67,20 @@ io.on('connection', (socket) => {
         }, 1000/30)
         io.to(`${players[0]}`).emit('youHost');
     }
-    io.sockets.emit('playerArray', (players));
-
-
     // Select screen controls received from user
     socket.on('selectingSprite', (select) => {
-        s.movePosition(s[`p${players.indexOf(select.socketID)+1}`], select.key);
+        if (players.indexOf(select.socketID) < sel.numOfPlayers){
+            s.movePosition(s[`p${players.indexOf(select.socketID)+1}`], select.key);
+        }
     })
     
-
-
-
     //In game controls received from user
     socket.on('bomberData', (bomberData) => {
         g.playerArr[bomberData.playerID].moveDown = bomberData.moveDown;
         g.playerArr[bomberData.playerID].moveLeft = bomberData.moveLeft;
         g.playerArr[bomberData.playerID].moveUp = bomberData.moveUp;
         g.playerArr[bomberData.playerID].moveRight = bomberData.moveRight;
-        g.playerArr[bomberData.playerID].lastPressed = bomberData.lastPressed;
+        emitSprite(bomberData.lastPressed, bomberData.playerID)
     });
     socket.on('dropABomb', (data) => {
         if(g.playerArr[data].bombAmmo > 0){
@@ -93,6 +94,14 @@ io.on('connection', (socket) => {
             }
         }   
     })
+
+    function emitSprite(lp, id){
+        data = {
+            lp: lp,
+            id: id,
+        }
+        io.sockets.emit('lastPressed', data)
+    }
 
 
     socket.on('selectCommands', data => {
@@ -335,6 +344,7 @@ class Bomb {
             // Explodes the bomb if it hasn't yet been triggered by another
             if (!this.exploding && !gameReset) {
                 this.explode();
+                io.sockets.emit('explode')
                 this.exploding = true;
             }
         }, 3000)       
@@ -820,7 +830,6 @@ function spriteSelectScreen() {
     let pReady = {};
     for (let i = 1; i <= sel.numOfPlayers; i++){
         pReady[`p${i}`] = false;
-        s[`p${i}`].exists = true;
     }
     let startTheGame = setInterval(() => {
         for (let i = 1; i <= sel.numOfPlayers; i++) {
@@ -867,13 +876,10 @@ function startNewRound() {
     // playerFourDead = false;
     setInterval(() => {
         io.sockets.emit('allData', allData);
+        // console.log(allData.players)
         mainLoop();
     }, 1000/60)
 
-
-
-    // numOfPlayers = g.playerArr.length;
-    // playersLeft = g.playerArr.length;
     // setTimeout(() => {
     //     gameReset = false;
     // }, 2999);
@@ -1050,18 +1056,27 @@ class Select{
                     console.log('pressed 2players')
                     this.numOfPlayers = 2;
                     s = new Startscreen();
+                    for (let i = 1; i <= this.numOfPlayers; i++){
+                        s[`p${i}`].exists = true;
+                    }
                     selectNumOfPlayers = false;
                     spriteSelect = true;
                 }
                 if(player.position == 2){
                     this.numOfPlayers = 3;
                     s = new Startscreen();
+                    for (let i = 1; i <= this.numOfPlayers; i++){
+                        s[`p${i}`].exists = true;
+                    }
                     selectNumOfPlayers = false;
                     spriteSelect = true;
                 }
                 if(player.position == 3){
                     this.numOfPlayers = 4;
                     s = new Startscreen();
+                    for (let i = 1; i <= this.numOfPlayers; i++){
+                        s[`p${i}`].exists = true;
+                    }
                     selectNumOfPlayers = false;
                     spriteSelect = true;
                 }

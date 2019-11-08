@@ -1,4 +1,5 @@
 let host = false;
+// Checks what screen you are on
 let gameRunning = false;
 let spriteSelectScreen = false;
 let selectNumOfPlayers = true;
