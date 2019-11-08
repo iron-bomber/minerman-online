@@ -179,26 +179,3 @@ let p42;
 let p43;
 let p44;
 let p45;
-
-
-//Idle object
-
-let idleObject = {
-    p1up: p1Up,
-    p1down: p1Down,
-    p1left: p1Left,
-    p1right: p1Right,
-    p2up: p2Up,
-    p2down: p2Down,
-    p2left: p2Left,
-    p2right: p2Right,
-    p3up: p3Up,
-    p3down: p3Down,
-    p3left: p3Left,
-    p3right: p3Up,
-    p4up: p4Up,
-    p4down: p4Down,
-    p4left: p4Left,
-    p4right: p4Right,
-
-}

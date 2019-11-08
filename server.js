@@ -383,19 +383,32 @@ class Bomber{
         this.jGrid = jGrid;
         this.bombPower = 1;
         this.bombAmmo = 2;
-        this.num = num - 1 ;
+        this.num = num - 1;
     }
 
 
     die(){
-        if(this.num == 0){
-            playerOneDead = true;
-            playerOneX = this.x;
-            playerOneY = this.y;
-        }else{
-            playerTwoDead = true;
-            playerTwoX = this.x;
-            playerTwoY = this.y;
+        switch(this.num){
+            case 0:
+                playerOneDead = true;
+                playerOneX = this.x;
+                playerOneY = this.y;
+                break;
+            case 1:
+                playerTwoDead = true;
+                playerTwoX = this.x;
+                playerTwoY = this.y;
+                break;
+            case 2:
+                playerThreeDead = true;
+                playerThreeX = this.x;
+                playerThreeY = this.y;
+                break;
+            case 3:
+                playerFourDead = true;
+                playerFourX = this.x;
+                playerFourY = this.y;
+                break;
         }
         m.bomberLocations[this.iGrid][this.jGrid] = 'free';
         playersLeft--;
@@ -466,16 +479,19 @@ class Bomber{
                 if (this.x >= xMin && this.x < xMax && this.y >= yMin && this.y < yMax) {
                     if(m.bombMap[i][j] === "bombpower"){
                         this.bombPower++;
+                        io.to(`${players[this.num]}`).emit('powerUp');
                         m.bombMap[i][j] = 'free';
                     }
                     if(m.bombMap[i][j] === "extrabomb"){
                         this.bombAmmo++;
+                        io.to(`${players[this.num]}`).emit('bombUp');
                         m.bombMap[i][j] = 'free';
                     }
                     if(m.bombMap[i][j] === "speed"){
                         if(this.speed < 6){
                             this.speed += 1
                         }
+                        io.to(`${players[this.num]}`).emit('speedUp');
                         m.bombMap[i][j] = 'free';
                     }
                     m.bomberLocations[i][j] = g.playerArr[this.num];

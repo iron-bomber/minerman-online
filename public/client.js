@@ -714,7 +714,7 @@ class Sound{
 
     // this.gameMusic.crossOrigin = 'anonymous';
     let gm = document.getElementById('gameMusic').play();
-    gm.volume = .2;
+    gm.volume = .4;
     }
     pauseGameMusic(){
         this.gameMusic.pause()
@@ -739,8 +739,19 @@ class Sound{
 let sound = new Sound();
 
 socket.on('explode', ()=>{
-    document.getElementById('explode').play();
-    setTimeout(()=>{
-    // document.getElementById('explode').pause();
-    },300)
+    let exp = document.getElementById('explode').play();
+    exp.volume = ".8"
+})
+
+socket.on('bombUp', ()=>{
+    let bomb = document.getElementById('bombUp').play()
+    bomb.volume = ".5"
+})
+socket.on('speedUp', ()=>{
+    let speed = document.getElementById('speedUp').play()
+    speed.volume = ".5"
+})
+socket.on('powerUp', ()=>{
+    let power = document.getElementById('powerUp').play()
+    power.volume = ".5"
 })
