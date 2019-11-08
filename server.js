@@ -28,19 +28,20 @@ let playerThreeX;
 let playerThreeY;
 let playerFourX;
 let playerFourY;
+let playersLeft;
 // Emits different screens to players
 let selectNumOfPlayers = true;
 let spriteSelect = false;
 let gameScreen = false;
-let startingXY = {
-    p1: [70, 70],
-    p2: [770, 770],
-    p3: [770, 70],
-    p4: [70, 770]
+let startingXYIJ = {
+    p1: [70, 70, 1, 1],
+    p2: [770, 770, 15, 15],
+    p3: [770, 70, 15, 1],
+    p4: [70, 770, 1, 15]
 }
 
-// // let numOfPlayers;
-// // let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
+let numOfPlayers;
+let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
 
 
 // // SPRITE VARS
@@ -243,6 +244,7 @@ class Bomb {
             // Explode left, checking for walls & bombs
             if (!rockCollide.left) {
                 // Kill bomber in blast radius left
+                
                 if (typeof m.bomberLocations[this.iGrid][this.jGrid-i] === 'object') {
                     m.bomberLocations[this.iGrid][this.jGrid-i].die();
                 }
@@ -372,19 +374,32 @@ class Bomber{
         this.jGrid = jGrid;
         this.bombPower = 1;
         this.bombAmmo = 2;
-        this.num = num - 1 ;
+        this.num = num - 1;
     }
 
 
     die(){
-        if(this.num == 0){
-            playerOneDead = true;
-            playerOneX = this.x;
-            playerOneY = this.y;
-        }else{
-            playerTwoDead = true;
-            playerTwoX = this.x;
-            playerTwoY = this.y;
+        switch(this.num){
+            case 0:
+                playerOneDead = true;
+                playerOneX = this.x;
+                playerOneY = this.y;
+                break;
+            case 1:
+                playerTwoDead = true;
+                playerTwoX = this.x;
+                playerTwoY = this.y;
+                break;
+            case 2:
+                playerThreeDead = true;
+                playerThreeX = this.x;
+                playerThreeY = this.y;
+                break;
+            case 3:
+                playerFourDead = true;
+                playerFourX = this.x;
+                playerFourY = this.y;
+                break;
         }
         m.bomberLocations[this.iGrid][this.jGrid] = 'free';
         playersLeft--;
@@ -455,16 +470,19 @@ class Bomber{
                 if (this.x >= xMin && this.x < xMax && this.y >= yMin && this.y < yMax) {
                     if(m.bombMap[i][j] === "bombpower"){
                         this.bombPower++;
+                        io.to(`${players[this.num]}`).emit('powerUp');
                         m.bombMap[i][j] = 'free';
                     }
                     if(m.bombMap[i][j] === "extrabomb"){
                         this.bombAmmo++;
+                        io.to(`${players[this.num]}`).emit('bombUp');
                         m.bombMap[i][j] = 'free';
                     }
                     if(m.bombMap[i][j] === "speed"){
                         if(this.speed < 6){
                             this.speed += 1
                         }
+                        io.to(`${players[this.num]}`).emit('speedUp');
                         m.bombMap[i][j] = 'free';
                     }
                     m.bomberLocations[i][j] = g.playerArr[this.num];
@@ -826,6 +844,7 @@ let allData;
 let g;
 let m;
 function spriteSelectScreen() {
+    playersLeft = sel.numOfPlayers;
     io.sockets.emit('selectYourSprite');
     let pReady = {};
     for (let i = 1; i <= sel.numOfPlayers; i++){
@@ -859,7 +878,7 @@ function startNewRound() {
     g = new Game();
     m = new BombMap();
     for (let i = 1; i <= sel.numOfPlayers; i++){
-        g.createPlayer(startingXY[`p${i}`][0], startingXY[`p${i}`][1], 1, 1, 1);
+        g.createPlayer(startingXYIJ[`p${i}`][0], startingXYIJ[`p${i}`][1], startingXYIJ[`p${i}`][2], startingXYIJ[`p${i}`][3], i);
     }
     m.generateRocks();
     allData = {
