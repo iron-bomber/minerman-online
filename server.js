@@ -94,6 +94,10 @@ io.on('connection', (socket) => {
                 newBomb.gridPlacer();
                 newBomb.timerExplode();
                 g.playerArr[data].bombAmmo -= 1;
+                // io.sockets.emit('newBombSprite', {
+                //     iGrid: newBomb.iGrid,
+                //     jGrid: newBomb.jGrid,
+                // })
             }
         }   
     })
@@ -407,59 +411,7 @@ class Bomber{
         g.playerArr.splice(this.num, 1, '');
         playersLeft--;
     }
-
-    wallDetection(){
-        
-        //Move Right OOB Check
-        if(this.x + this.speed + this.width > 850){
-            for(let i = 0; i < this.speed; i++){
-                if(this.x + this.width < 850){
-                    this.x++;
-                }
-            }
-        }else{
-            if(this.moveRight){
-                this.x += this.speed;
-            }
-        }
-        //Move Left OOB Check
-        if(this.x - this.speed < 0){
-            for(let i = 0; i < this.speed; i++){
-                if(this.x > 0){
-                    this.x--;
-                }
-            }
-        }else{
-            if(this.moveLeft){
-                this.x -= this.speed;
-            }
-        }
-        //Move Down OOB Check
-        if(this.y  + this.height + this.speed > 850){
-            for(let i = 0; i < this.speed; i++){
-                if(this.y + this.height < 850){
-                    this.y++;
-                }
-            }
-        }else{
-            if(this.moveDown){
-                this.y += this.speed;
-            }
-        }
-        //Move Up OOB Check
-        if(this.y - this.speed < 0){
-            for(let i = 0; i < this.speed; i++){
-                if(this.y > 0){
-                    this.y--;
-                }
-            }
-        }else{
-            if(this.moveUp){
-                this.y -= this.speed;
-            }
-        }
-    }
-
+    
     gridPlacer () {
         let xMin = 50;
         let xMax = 100;
