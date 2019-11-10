@@ -28,7 +28,9 @@ let playerThreeX;
 let playerThreeY;
 let playerFourX;
 let playerFourY;
+let numOfPlayers
 let playersLeft;
+let gameComplete = false;
 // Emits different screens to players
 let selectNumOfPlayers = true;
 let spriteSelect = false;
@@ -39,8 +41,8 @@ let startingXYIJ = {
     p3: [770, 70, 15, 1],
     p4: [70, 770, 1, 15]
 }
+let mainGameInterval;
 
-let numOfPlayers;
 let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
 
 
@@ -402,8 +404,8 @@ class Bomber{
                 break;
         }
         m.bomberLocations[this.iGrid][this.jGrid] = 'free';
-        playersLeft--;
         g.playerArr.splice(this.num, 1, '');
+        playersLeft--;
     }
 
     wallDetection(){
@@ -777,42 +779,18 @@ class Game {
     }
 }
 
+function newRound() {
+    setTimeout(() => {
+        clearInterval(mainGameInterval);
+        playersLeft = sel.numOfPlayers;
+        io.sockets.emit('clearInterval');
+        io.sockets.emit('resetLives');
+        startNewRound();
+    }, 3000)
+}
+
 function mainLoop(){
 
-    //RESETTING THE GAME
-    // if (playersLeft === 1) {
-    //     for(let i = 0; i < g.playerArr.length; i++) {
-    //         if (typeof g.playerArr[i] === 'object') {
-    //             playerScores[`p${i+1}`] += 1;
-    //             for (let j = 0; j < numOfPlayers; j++) {
-    //             }
-    //         }
-    //     }
-    //     for(let i = 0; i < g.playerArr.length; i++) {
-    //         if (typeof g.playerArr[i] === 'object') {
-    //             if(playerScores[`p${i+1}`] > 0){
-    //                 gameComplete = true;
-    //             }
-    //         }
-    //     }
-    //     playersLeft = 0;
-    //     gameReset = true;
-    //     if (!gameComplete){
-    //         setTimeout(()=>{
-    //             startNewRound();
-    //         }, 5000)
-    //     }
-    // }//END RESETTING
-
-    //GRID PLACER & MoveCheck
-    for (let i = 0; i < g.playerArr.length; i++) {
-        if(g.playerArr[i] !== ''){
-            g.playerArr[i].gridPlacer();
-            if(g.playerArr[i].moveUp || g.playerArr[i].moveDown || g.playerArr[i].moveLeft || g.playerArr[i].moveRight){
-                g.playerArr[i].move();
-            }
-        }
-    }
     if (playerOneDead) {
         let deathCoords1 = {x: playerOneX, y: playerOneY};
         io.sockets.emit('playerOneDead', deathCoords1);
@@ -829,6 +807,45 @@ function mainLoop(){
         let deathCoords4 = {x: playerFourX, y: playerFourY};
         io.sockets.emit('playerFourDead', deathCoords4);
     }
+    //RESETTING THE GAME
+    if (playersLeft <= 1) {
+        if (!gameReset){
+            for(let i = 0; i < sel.numOfPlayers; i++) {
+                if (typeof g.playerArr[i] === 'object') {
+                    playerScores[`p${i+1}`] += 1;
+                }
+            }
+            for(let i = 0; i < sel.numOfPlayers; i++) {
+                if (typeof g.playerArr[i] === 'object') {
+                    if(playerScores[`p${i+1}`] > 2){
+                        gameComplete = true;
+                    }
+                }
+            }
+            gameReset = true;
+            io.sockets.emit('playerScores', playerScores); 
+            if (!gameComplete){
+                newRound();
+            } else {
+                io.sockets.emit('playerScores', playerScores);
+            }
+        }
+
+    } else {
+        for (let i = 0; i < g.playerArr.length; i++) {
+            if(g.playerArr[i] !== ''){
+                g.playerArr[i].gridPlacer();
+                if(g.playerArr[i].moveUp || g.playerArr[i].moveDown || g.playerArr[i].moveLeft || g.playerArr[i].moveRight){
+                    g.playerArr[i].move();
+                }
+            }
+        }
+    }
+
+    //GRID PLACER & MoveCheck
+
+
+
     // if(gameComplete == true){
     //     //EVENTUALLY GO TO SCORE SCREEN
     //     console.log('happ')
@@ -845,6 +862,7 @@ let g;
 let m;
 function spriteSelectScreen() {
     playersLeft = sel.numOfPlayers;
+    numOfPlayers = sel.numOfPlayers;
     io.sockets.emit('selectYourSprite');
     let pReady = {};
     for (let i = 1; i <= sel.numOfPlayers; i++){
@@ -872,9 +890,9 @@ function spriteSelectScreen() {
     }, 1000/40)
 
 }
-
+let timesSprite = true;
 function startNewRound() {
-    console.log('starting game');
+    console.log('starting new round');
     g = new Game();
     m = new BombMap();
     for (let i = 1; i <= sel.numOfPlayers; i++){
@@ -886,31 +904,27 @@ function startNewRound() {
         players: g.playerArr
     };
     io.sockets.emit('allData', allData);
-    io.sockets.emit('chooseSprites');
     io.sockets.emit('bomberDataRequest');
-    io.sockets.emit('serverFrame');
-    // playerOneDead = false;;
-    // playerTwoDead = false;
-    // playerThreeDead = false;
-    // playerFourDead = false;
-    setInterval(() => {
+    if (timesSprite) {
+        io.sockets.emit('chooseSprites');
+        timesSprite = false;
+    }
+    playerOneDead = false;;
+    playerTwoDead = false;
+    playerThreeDead = false;
+    playerFourDead = false;
+    mainGameInterval = setInterval(() => {
         io.sockets.emit('allData', allData);
-        // console.log(allData.players)
+        io.sockets.emit('serverFrame');
         mainLoop();
-    }, 1000/60)
-
-    // setTimeout(() => {
-    //     gameReset = false;
-    // }, 2999);
+    }, 1000/50);
+    setTimeout(() => {
+        gameReset = false;
+    }, 2999);
 }
 
-// function mainLoopable(){
-//     if(gameRunning == false){
-//         stopMainLoop = false;
-//         mainLoop();
-//     }
-// }
 
+ 
 class Startscreen{
     constructor(){
         this.p1 = {
@@ -1025,16 +1039,16 @@ class Startscreen{
 
 
 
-// // function restartSession(){
-// //     for(let i = 0; i < g.playerArr.length; i++) {       
-// //         playerScores[`p${i+1}`] = 0;      
-// //     }
-// //     s = new Startscreen();
-// //     gameRunning = false;
-// //     gameComplete = false;
-// //     stopMainLoop = true;
-// //     startLoop();  
-// // }
+// function restartSession(){
+//     for(let i = 0; i < g.playerArr.length; i++) {       
+//         playerScores[`p${i+1}`] = 0;      
+//     }
+//     s = new Startscreen();
+//     gameRunning = false;
+//     gameComplete = false;
+//     stopMainLoop = true;
+//     startLoop();  
+// }
 
 let s = new Startscreen();
 

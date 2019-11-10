@@ -31,14 +31,13 @@ socket.on('youHost', () => {
     host = true;
     commands();
 });
-
+let sendDataInterval;
 socket.on('bomberDataRequest', () => {
     if (players.indexOf(socket.id) < sel.numOfPlayers){
-        console.log('sending bomber data');
         bomberData.playerID = players.indexOf(socket.id);
         gameRunning = true;
         commands();
-        setInterval(() => {
+        sendDataInterval = setInterval(() => {
             socket.emit('bomberData', bomberData);
         }, 1000/60);
     }
@@ -85,7 +84,6 @@ function drawBorderSelect(player){
     }
 }
 function selectLoop(){
-    // console.log('select loop')
     ctx.clearRect(0, 0, 850, 850);
     ctx.drawImage(desertBG, 0, 0, 750, 992, 0, 0, 850, 850);
 
@@ -280,7 +278,6 @@ function drawIcons(){
 }
 function commands() {
     if (gameRunning) {
-        console.log('now emitting game movements')
         document.onkeypress = function(e){
             if(e.key === "s" || e.key === "S"){
                 bomberData.moveDown = true;
@@ -411,7 +408,6 @@ socket.on('lastPressed', (data)=>{
 function drawBomb(bomb){
     let newBombSprites = [...bombSprites];
     if(bomb.bombframeCounter < bomb.bombtotalFrames){
-        // console.log(bomb.bombSprites[bomb.bombssNum], bomb.bombssNum)
         ctx.drawImage(newBombSprites[bomb.bombssNum], 0, 0, 16, 16, bomb.jGrid*50, bomb.iGrid*50,  50, 50);
     }
     if(bomb.bombframeCounter % bomb.bombframeRate === 0){
@@ -429,11 +425,6 @@ function drawBomb(bomb){
 //Draw explosion
 
 function drawMap() {
-
-    var leftWall = new Image();
-    leftWall.src="./Images/leftWall.png";
-    var rock = new Image();
-    rock.src="./Images/rock.png";
     let xCoord = 0;
     let yCoord = 0;
     for(let i = 0; i < m.bombMap.length; i++) {
@@ -667,14 +658,17 @@ function createSprites() {
 }
 
 socket.on('allData', (data) => {
+    m = null;
+    playerArr = null;
     m = data.map;
     playerArr = data.players;
 })
 
 socket.on('serverFrame', () => {
-    setInterval(()=>{
-        mainLoop();
-    }, 1000/60)
+    mainLoop();
+})
+socket.on('clearInterval', () => {
+    clearInterval(sendDataInterval);
 })
 
 socket.on('playerOneDead', (data) => {
@@ -697,13 +691,29 @@ socket.on('playerFourDead', (data) => {
     playerFourX = data.x;
     playerFourY = data.y;
 })
+socket.on('resetLives', () => {
+    for (let i = 0; i < spriteArr.length; i++) {
+        spriteArr[i].deathDone = false;
+        spriteArr[i].frameCounter = 0;
+        spriteArr[i].ssNum = 0;
+        spriteArr[i].totalFrames = spriteArr[i].frameRate*8;
+    }
+    playerOneDead = false;
+    playerTwoDead = false;
+    playerThreeDead = false;
+    playerFourDead = false;
+})
+socket.on('playerScores', (data) => {
+    console.log(
+        `Scores:
+        Player 1 : ${data.p1} 
+        Player 2 : ${data.p2}
+        Player 3 : ${data.p3}
+        Player 4 : ${data.p4}
+         `
+        );
+})
 function mainLoop(){
-    //RESETTING THE GAME
-        if (gameComplete){
-            commands();
-        }
-    //END RESETTING
-
     if(!sound.songPlaying){
         sound.playGameMusic();
     }
