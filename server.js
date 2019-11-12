@@ -421,7 +421,7 @@ class Bomber{
         // Iterates through the 2d array
         for (let i = 1; i < m.bomberLocations.length-1; i++) {
             for (let j = 1; j < m.bomberLocations.length-1; j++) {
-                if (this.x >= xMin && this.x < xMax && this.y >= yMin && this.y < yMax) {
+                if (this.x + this.width/2 >= xMin && this.x + this.width/2 < xMax && this.y + 5 + this.height/2 >= yMin && this.y + 5 + this.height/2 < yMax) {
                     if(m.bombMap[i][j] === "bombpower"){
                         this.bombPower++;
                         io.to(`${players[this.num]}`).emit('powerUp');

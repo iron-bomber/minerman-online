@@ -209,3 +209,35 @@ minerman.src="/Images/minerman.png"
 players2.src="/Images/2p.png"
 players3.src="/Images/3p.png"
 players4.src="/Images/4p.png"
+
+
+let explosion = {
+    center1: 'centerImg',
+    center2: 'centerImg',
+    center3: 'centerImg',
+    center4: 'centerImg',
+    vertical1: 'vertical1Img',
+    vertical2: 'vertical2Img',
+    vertical3: 'vertical3Img',
+    vertical4: 'vertical4Img',
+    horizontal1: 'horizontal1Img',
+    horizontal2: 'horizontal2Img',
+    horizontal3: 'horizontal3Img',
+    horizontal4: 'horizontal4Img',
+    top1: 'top1Img',
+    top2: 'top2Img',
+    top3: 'top3Img',
+    top4: 'top4Img',
+    bottom1: 'bottom1Img',
+    bottom2: 'bottom2Img',
+    bottom3: 'bottom3Img',
+    bottom4: 'bottom4Img',
+    left1: 'left1Img',
+    left2: 'left2Img',
+    left3: 'left3Img',
+    left4: 'left4Img',
+    right1: 'right1Img',
+    right2: 'right2Img',
+    right3: 'right3Img',
+    right4: 'right4Img'
+};
