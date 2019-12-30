@@ -1,3 +1,4 @@
+
 let socket = io.connect();
 let players = [];
 
