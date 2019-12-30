@@ -887,3 +887,7 @@ socket.on('playerScores', (data)=>{
     document.getElementById('p3score').innerHtml = data.p3
     document.getElementById('p4score').innerHtml = data.p4
 })
+
+function pushMe(){
+    socket.emit('playerID', socket.id)
+}
