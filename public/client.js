@@ -1,6 +1,7 @@
 
 let socket = io.connect();
 let players = [];
+let playerNames = [];
 let disconnected = [];
 
 let bomberData = {
@@ -53,7 +54,8 @@ let playerClasses = {
 
 // Server sends updated player array
 socket.on('playerArray', async playerArray => {
-    players = playerArray;
+    players = playerArray.ids;
+    playerNames = playerArray.names;
     let el = await document.getElementById('lobby');
     while (el.firstChild) await el.removeChild(el.firstChild);
     for (let player in players){
@@ -62,9 +64,9 @@ socket.on('playerArray', async playerArray => {
         icon.className = playerClasses[`p${Number(player)+1}`];
         let socketId = await document.createElement('span');
         if (disconnected.includes(players[player])){
-            socketId.innerText = players[player] + ' (disconnected)';
+            socketId.innerText = playerNames[player] + ' (disconnected)';
         } else {
-            socketId.innerText = players[player];
+            socketId.innerText = playerNames[player];
         }
         await listItem.appendChild(icon);
         await listItem.appendChild(socketId);
@@ -82,10 +84,10 @@ socket.on('playerDisconnected', async disconnectedPlayers => {
             let icon = await document.createElement('i');
             icon.className = playerClasses[`p${Number(player)+1}`];
             let socketId = await document.createElement('span');
-            if (disconnectedPlayers.includes(players[player])){
-                socketId.innerText = players[player] + ' (disconnected)';
+            if (disconnected.includes(players[player])){
+                socketId.innerText = playerNames[player] + ' (disconnected)';
             } else {
-                socketId.innerText = players[player];
+                socketId.innerText = playerNames[player];
             }
             await listItem.appendChild(icon);
             await listItem.appendChild(socketId);
@@ -962,8 +964,14 @@ document.querySelectorAll("button").forEach( function(item) {
     })
 })
 
-function divKill(){
-    socket.emit('playerID', socket.id)
+async function divKill(){
+    let playerUsername = await document.getElementById('nameinput').value;
+    let newUser = {
+        id: socket.id,
+        name: playerUsername
+    }
+    console.log('new user ', newUser);
+    socket.emit('playerID', newUser);
     let element = document.getElementById("tutorial");
     element.remove();
 }

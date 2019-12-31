@@ -1,6 +1,7 @@
 let gameReset = false;
 let bombIDs = 0;
 const players = [];
+const playerNames = [];
 const disconnected = [];
 const express = require('express');
 const socket = require('socket.io');
@@ -54,7 +55,11 @@ let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
 io.on('connection', (socket) => {
     console.log('connection made', new Date());
     console.log(socket.id);
-    io.sockets.emit('playerArray', (players));
+    let thePlayers = {
+        ids: players,
+        names: playerNames
+    };
+    io.sockets.emit('playerArray', (thePlayers));
     // Select screen controls received from user
     socket.on('selectingSprite', (select) => {
         if (players.indexOf(select.socketID) < sel.numOfPlayers){
@@ -71,20 +76,30 @@ io.on('connection', (socket) => {
             } else {
                 let i = players.indexOf(socket.id);
                 players.splice(i, 1);
-                io.sockets.emit('playerArray', players);
+                playerNames.splice(i, 1);
+                let thePlayers = {
+                    ids: players,
+                    names: playerNames
+                };
+                io.sockets.emit('playerArray', thePlayers);
                 io.to(`${players[0]}`).emit('youHost');
             }
         }
     })
 
-    socket.on('playerID', (socketid)=>{
-        if (!players.includes(socketid)){
-            players.push(socketid);
+    socket.on('playerID', (newPlayer)=>{
+        if (!players.includes(newPlayer.id)){
+            players.push(newPlayer.id);
+            playerNames.push(newPlayer.name);
             if (spriteSelect) {
                 io.to(socket.id).emit('selectNumOfPlayers', sel);
                 io.to(socket.id).emit('selectYourSprite');
             }
-            io.sockets.emit('playerArray', (players));
+            let thePlayers = {
+                ids: players,
+                names: playerNames
+            };
+            io.sockets.emit('playerArray', (thePlayers));
             console.log('85 ', players.length)
             if (players.length === 1) {
                 console.log('select screen');
