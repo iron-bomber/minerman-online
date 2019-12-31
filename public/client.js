@@ -84,23 +84,47 @@ function drawBorderSelect(player){
         }
     }
 }
+
+
 function selectLoop(){
     ctx.clearRect(0, 0, 850, 850);
     ctx.drawImage(desertBG, 0, 0, 750, 992, 0, 0, 850, 850);
 
     //Minerman Logo
-    ctx.drawImage(minerman, 0, 0, 180, 36, 115, 100, 600, 100);
+        ctx.drawImage(minerman, 0, 0, 180, 36, 115, 100, 600, 100);
 
     //Draw Player# options
-    ctx.drawImage(players2, 0, 0, 374, 50, 240, 300, 374, 50)
-    ctx.drawImage(players3, 0, 0, 374, 50, 240, 450, 374, 50)
-    ctx.drawImage(players4, 0, 0, 374, 50, 240, 600, 374, 50)
 
+        if(players.length >= 2){
+            ctx.drawImage(players2, 0, 0, 374, 50, 240, 300, 374, 50)
+        }else{
+            ctx.globalAlpha = .5;
+            ctx.drawImage(players2, 0, 0, 374, 50, 240, 300, 374, 50)
+            ctx.globalAlpha = 1;
+        }
 
-    //Draw player borders
-    drawBorderSelect(sel.p1);
+        if(players.length >= 3){
+            ctx.drawImage(players3, 0, 0, 374, 50, 240, 450, 374, 50)
+        }else{
+            ctx.globalAlpha = .5;
+            ctx.drawImage(players3, 0, 0, 374, 50, 240, 450, 374, 50)
+            ctx.globalAlpha = 1;
+        }
+
+        if(players.length >= 4){
+            ctx.drawImage(players4, 0, 0, 374, 50, 240, 600, 374, 50)
+        }else{
+            ctx.globalAlpha = .5;
+            ctx.drawImage(players4, 0, 0, 374, 50, 240, 600, 374, 50)
+            ctx.globalAlpha = 1;
+        }
+    
+        //Draw player borders
+            drawBorderSelect(sel.p1);
 
 }
+
+
 function drawBorder(player, i){    
     if(player.exists == true){
         if(player.position == 1){

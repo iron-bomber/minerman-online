@@ -1058,34 +1058,52 @@ class Select{
                 }
                 break;
             case "spacebar":
-                player.exists = false;
                 if(player.position == 1){
-                    console.log('pressed 2players')
-                    this.numOfPlayers = 2;
-                    s = new Startscreen();
-                    for (let i = 1; i <= this.numOfPlayers; i++){
-                        s[`p${i}`].exists = true;
+                    
+                    if(players.length >= 2){
+                        player.exists = false;
+                        console.log('pressed 2players')
+                        this.numOfPlayers = 2;
+                        s = new Startscreen();
+                        for (let i = 1; i <= this.numOfPlayers; i++){
+                            s[`p${i}`].exists = true;
+                        }
+                        selectNumOfPlayers = false;
+                        spriteSelect = true;
                     }
-                    selectNumOfPlayers = false;
-                    spriteSelect = true;
+
                 }
+
+
                 if(player.position == 2){
-                    this.numOfPlayers = 3;
-                    s = new Startscreen();
-                    for (let i = 1; i <= this.numOfPlayers; i++){
-                        s[`p${i}`].exists = true;
+                    
+                    if(players.length >= 3){
+                        player.exists = false;
+                        this.numOfPlayers = 3;
+                        s = new Startscreen();
+                        for (let i = 1; i <= this.numOfPlayers; i++){
+                            s[`p${i}`].exists = true;
+                        }
+                        selectNumOfPlayers = false;
+                        spriteSelect = true;
                     }
-                    selectNumOfPlayers = false;
-                    spriteSelect = true;
+
                 }
+
+
                 if(player.position == 3){
-                    this.numOfPlayers = 4;
-                    s = new Startscreen();
-                    for (let i = 1; i <= this.numOfPlayers; i++){
-                        s[`p${i}`].exists = true;
+                    
+                    if(players.length >= 4){
+                        player.exists = false;
+                        this.numOfPlayers = 4;
+                        s = new Startscreen();
+                        for (let i = 1; i <= this.numOfPlayers; i++){
+                            s[`p${i}`].exists = true;
+                        }
+                        selectNumOfPlayers = false;
+                        spriteSelect = true;
                     }
-                    selectNumOfPlayers = false;
-                    spriteSelect = true;
+
                 }
                 break;
         }
