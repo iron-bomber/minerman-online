@@ -1,8 +1,10 @@
 let gameReset = false;
 let bombIDs = 0;
 const players = [];
+const disconnected = [];
 const express = require('express');
 const socket = require('socket.io');
+let gameRunning = false;
 
 // App setup
 const app = express();
@@ -57,6 +59,21 @@ io.on('connection', (socket) => {
     socket.on('selectingSprite', (select) => {
         if (players.indexOf(select.socketID) < sel.numOfPlayers){
             s.movePosition(s[`p${players.indexOf(select.socketID)+1}`], select.key);
+        }
+    })
+
+
+    socket.on('disconnect', () => {
+        if (players.indexOf(socket.id) != -1){
+            if (gameRunning){
+                disconnected.push(socket.id);
+                io.sockets.emit('playerDisconnected', disconnected);
+            } else {
+                let i = players.indexOf(socket.id);
+                players.splice(i, 1);
+                io.sockets.emit('playerArray', players);
+                io.to(`${players[0]}`).emit('youHost');
+            }
         }
     })
 
@@ -851,6 +868,7 @@ function spriteSelectScreen() {
 }
 let timesSprite = true;
 function startNewRound() {
+    gameRunning = true;
     console.log('starting new round');
     g = new Game();
     m = new BombMap();
@@ -868,7 +886,7 @@ function startNewRound() {
         io.sockets.emit('chooseSprites');
         timesSprite = false;
     }
-    playerOneDead = false;;
+    playerOneDead = false;
     playerTwoDead = false;
     playerThreeDead = false;
     playerFourDead = false;

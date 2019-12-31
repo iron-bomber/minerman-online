@@ -1,6 +1,7 @@
 
 let socket = io.connect();
 let players = [];
+let disconnected = [];
 
 let bomberData = {
     moveDown: false,
@@ -60,12 +61,38 @@ socket.on('playerArray', async playerArray => {
         let icon = await document.createElement('i');
         icon.className = playerClasses[`p${Number(player)+1}`];
         let socketId = await document.createElement('span');
-        socketId.innerText = players[player];
+        if (disconnected.includes(players[player])){
+            socketId.innerText = players[player] + ' (disconnected)';
+        } else {
+            socketId.innerText = players[player];
+        }
         await listItem.appendChild(icon);
         await listItem.appendChild(socketId);
         await el.appendChild(listItem);
     }
 });
+
+socket.on('playerDisconnected', async disconnectedPlayers => {
+    disconnected = disconnectedPlayers;
+    if (disconnected.length > 0){
+        let el = await document.getElementById('lobby');
+        while (el.firstChild) await el.removeChild(el.firstChild);
+        for (let player in players){
+            let listItem = await document.createElement('li');
+            let icon = await document.createElement('i');
+            icon.className = playerClasses[`p${Number(player)+1}`];
+            let socketId = await document.createElement('span');
+            if (disconnectedPlayers.includes(players[player])){
+                socketId.innerText = players[player] + ' (disconnected)';
+            } else {
+                socketId.innerText = players[player];
+            }
+            await listItem.appendChild(icon);
+            await listItem.appendChild(socketId);
+            await el.appendChild(listItem);
+        }
+    }
+})
 
 socket.on('selectNumOfPlayers', (data) => {
     sel = data;
@@ -938,17 +965,3 @@ document.querySelectorAll("button").forEach( function(item) {
         this.blur();
     })
 })
-
-// socket.on('newPlayer', (players) => {
-//     let lobbyList = "";
-//     for (let player in players){
-//         lobbyList += `
-//         <li>
-//             <i class=${playerClasses[`p${player+1}`]}></i>
-//             <span>${players[player]}</span>
-//         </li>
-//         `
-//     }
-//     console.log(lobbyList);
-//     document.getElementById('lobby').innerHtml = lobbyList;
-// })
