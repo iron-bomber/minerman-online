@@ -929,15 +929,17 @@ socket.on('playerScores', (data)=>{
     document.getElementById('p4score').innerHtml = data.p4
 })
 
-function pushMe(){
-    socket.emit('playerID', socket.id)
-}
-
 document.querySelectorAll("button").forEach( function(item) {
     item.addEventListener('focus', function() {
         this.blur();
     })
 })
+
+function divKill(){
+    socket.emit('playerID', socket.id)
+    let element = document.getElementById("tutorial");
+    element.remove();
+}
 
 // socket.on('newPlayer', (players) => {
 //     let lobbyList = "";
