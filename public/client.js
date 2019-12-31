@@ -43,12 +43,29 @@ socket.on('bomberDataRequest', () => {
         }, 1000/60);
     }
 })
+let playerClasses = {
+    p1: 'fa fa-circle player1',
+    p2: 'fa fa-circle player2',
+    p3: 'fa fa-circle player3',
+    p4: 'fa fa-circle player4'
+};
 
 // Server sends updated player array
-socket.on('playerArray', playerArray => {
+socket.on('playerArray', async playerArray => {
     players = playerArray;
+    let el = await document.getElementById('lobby');
+    while (el.firstChild) await el.removeChild(el.firstChild);
+    for (let player in players){
+        let listItem = await document.createElement('li');
+        let icon = await document.createElement('i');
+        icon.className = playerClasses[`p${Number(player)+1}`];
+        let socketId = await document.createElement('span');
+        socketId.innerText = players[player];
+        await listItem.appendChild(icon);
+        await listItem.appendChild(socketId);
+        await el.appendChild(listItem);
+    }
 });
-
 
 socket.on('selectNumOfPlayers', (data) => {
     sel = data;
@@ -891,3 +908,23 @@ socket.on('playerScores', (data)=>{
 function pushMe(){
     socket.emit('playerID', socket.id)
 }
+
+document.querySelectorAll("button").forEach( function(item) {
+    item.addEventListener('focus', function() {
+        this.blur();
+    })
+})
+
+// socket.on('newPlayer', (players) => {
+//     let lobbyList = "";
+//     for (let player in players){
+//         lobbyList += `
+//         <li>
+//             <i class=${playerClasses[`p${player+1}`]}></i>
+//             <span>${players[player]}</span>
+//         </li>
+//         `
+//     }
+//     console.log(lobbyList);
+//     document.getElementById('lobby').innerHtml = lobbyList;
+// })

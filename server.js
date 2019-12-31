@@ -52,21 +52,7 @@ let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
 io.on('connection', (socket) => {
     console.log('connection made', new Date());
     console.log(socket.id);
-
     io.sockets.emit('playerArray', (players));
-    if (players.length === 1) {
-        console.log('select screen');
-        let selectNumOfPlayersInterval = setInterval(() => {
-            io.sockets.emit('selectNumOfPlayers', sel)
-            if(!selectNumOfPlayers) {
-                console.log('select screen done, start screen enabled');
-                clearInterval(selectNumOfPlayersInterval);
-                spriteSelectScreen();
-            }
-        }, 1000/30)
-        io.to(`${players[0]}`).emit('youHost');
-    }
-
     // Select screen controls received from user
     socket.on('selectingSprite', (select) => {
         if (players.indexOf(select.socketID) < sel.numOfPlayers){
@@ -75,27 +61,26 @@ io.on('connection', (socket) => {
     })
 
     socket.on('playerID', (socketid)=>{
-        console.log(socketid)
-        console.log(players)
-        players.push(socketid);
-
-        if (spriteSelect) {
-            io.to(socket.id).emit('selectNumOfPlayers', sel);
-            io.to(socket.id).emit('selectYourSprite');
-        }
-
-        io.sockets.emit('playerArray', (players));
-        if (players.length === 1) {
-            console.log('select screen');
-            let selectNumOfPlayersInterval = setInterval(() => {
-                io.sockets.emit('selectNumOfPlayers', sel)
-                if(!selectNumOfPlayers) {
-                    console.log('select screen done, start screen enabled');
-                    clearInterval(selectNumOfPlayersInterval);
-                    spriteSelectScreen();
-                }
-            }, 1000/30)
-            io.to(`${players[0]}`).emit('youHost');
+        if (!players.includes(socketid)){
+            players.push(socketid);
+            if (spriteSelect) {
+                io.to(socket.id).emit('selectNumOfPlayers', sel);
+                io.to(socket.id).emit('selectYourSprite');
+            }
+            io.sockets.emit('playerArray', (players));
+            console.log('85 ', players.length)
+            if (players.length === 1) {
+                console.log('select screen');
+                let selectNumOfPlayersInterval = setInterval(() => {
+                    io.sockets.emit('selectNumOfPlayers', sel)
+                    if(!selectNumOfPlayers) {
+                        console.log('select screen done, start screen enabled');
+                        clearInterval(selectNumOfPlayersInterval);
+                        spriteSelectScreen();
+                    }
+                }, 1000/30)
+                io.to(`${players[0]}`).emit('youHost');
+            }
         }
     })
     

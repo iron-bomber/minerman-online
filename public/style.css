@@ -29,18 +29,6 @@ body{
     transform: scale(.8);
 }
 
-.right {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    align-items: center;
-    height: 100%;
-    width: 100%;
-    background-color: black;
-    /* color: white;
-    border: 1px solid white; */
-}
-
 .control1, .control2{
     width: 200px;
     text-align: center;
@@ -81,22 +69,97 @@ body{
 .left, .right{
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     align-items: center;
     height: 100%;
     width: 100%;
-    background-image: url(./Images/ruinsbg.png);
-    background-repeat: no-repeat;
-    background-size: cover;
+    background-color: white;
+    color: black;
     flex-grow: 2;
     /* color: white;
     border: 1px solid white; */
 
 }
+
+.right {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    /* color: white;
+    border: 1px solid white; */
+}
 .left img {
     width: 100px;
     height: 70px;
     background-color: white;
+}
+
+ul.chat-list li  {
+    color: #6a6a6a;
+    display: block;
+    padding: 15px;
+    font-weight: 300;
+    text-decoration: none;
+}
+
+ul.chat-list li h4 {
+    padding: 17px 15px;
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    border-bottom: 1px solid #D5D7DE;
+}
+
+ul.chat-list li h4 i {
+    padding-right: 5px;
+}
+
+ul.chat-list li span {
+    padding-left: 10px;
+}
+
+ul.chat-list li i.fa-times {
+    color: #9fa3b0;
+}
+
+ul.chat-list li.active {
+    color: #00a9b4;
+    background: #f2f4f7;
+}
+
+ul.chat-list {
+    border-bottom: 1px solid #d5d7de;
+    padding-left: 0;
+    list-style: none;
+}
+
+ul.chat-user  {
+    margin-bottom: 200px;
+}
+
+ul.chat-user li {
+    border-bottom: none;
+}
+
+ul.chat-user li a:hover{
+    background: none;
+    color: #6a6a6a;
+}
+
+.player1{
+    color: yellow;
+}
+.player2{
+    color: blue;
+}
+.player3{
+    color: red;
+}
+.player4{
+    color: green;
 }
 
 .start-btn{

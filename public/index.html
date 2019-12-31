@@ -6,6 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="style.css">
+    <script src="https://use.fontawesome.com/135faabece.js"></script>
     <script src="/socket.io/socket.io.js"></script>
     <title>MinerMan</title>
 </head>
@@ -16,33 +17,41 @@
             <h1>DIE NO WAY</h1>
             <button class="start-btn">PLAY</button>
         </div> --> 
-        <!-- <div class='left'> -->
-          <!-- <h1>Controls</h1>
-          <div>
-            <span class="control1">
-                <img src="./images/p1/wasdKeys.png" alt="Use the WASD keys to move">
-                <p>Use the WASD keys to move</p>
-            </span>
-            <span class="control2">
-                <img src="./Images/p1/space-bar.png" alt="Use the spacebar to drop bombs">
-                <p>Use the Spacebar to drop bombs</p>
-            </span>
-          </div> -->
-        <!-- </div> -->
+        <!-- <li>
+          <i class="fa fa-circle text-success"></i>
+          <span>Jonathan Smith</span>
+        </li>
+        <li>
+          <i class="fa fa-circle text-success"></i>
+          <span>Jhon Doe</span>
+        </li>
+        <li>
+          <i class="fa fa-circle text-muted"></i>
+          <span>Cendy Andrianto</span>
+        </li>
+        <li>
+          <i class="fa fa-circle text-danger"></i>
+          <span>Tatang Sutrana</span>
+        </li> -->
+        <div class='left'>
+          <h1>Lobby</h1>
+          <ul class="chat-list chat-user" id="lobby">
+
+          </ul>
+        </div>
         <div class="main-game-container">
             <canvas id="main-game-board" width="850" height="850"></canvas>
         </div>
-
-        <button onclick="pushMe()">ADD</button>
         <!-- <div>
           <p>P1: <span id="p1score">0</span></p>
           <p>P2: <span id="p2score">0</span></p>
           <p>P3: <span id="p3score">0</span></p>
           <p>P4: <span id="p4score">0</span></p>
         </div> -->
-        <!-- <div class='right'>
-
-        </div> -->
+        <div class='right'>
+          <button onclick="pushMe()">Join game</button>
+          yeah yeah yeah
+        </div>
     </section>  
     <!-- <div class ='phone-controls'>
         <div class='movement'>
