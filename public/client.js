@@ -99,7 +99,7 @@ socket.on('playerArray', async playerArray => {
 socket.on('playerDisconnected', async disconnectedPlayers => {
     disconnected = disconnectedPlayers;
     if (disconnected.length > 0){
-        let el = await document.getElementById('lobby');
+        let el = await document.getElementById('players');
         while (el.firstChild) await el.removeChild(el.firstChild);
         for (let player in players){
             let listItem = await document.createElement('li');

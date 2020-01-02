@@ -95,6 +95,18 @@ io.on('connection', async (socket) => {
                 io.sockets.emit('playerArray', thePlayers);
                 io.to(`${players[0]}`).emit('youHost');
             }
+        } else if (spectators.indexOf(socket.id) != -1){
+            let i = spectators.indexOf(socket.id);
+            spectators.splice(i, 1);
+            spectatorNames.splice(i, 1);
+            let thePlayers = {
+                ids: players,
+                names: playerNames,
+                specIds: spectators,
+                specNames: spectatorNames
+            };
+            io.sockets.emit('playerArray', thePlayers);
+            io.to(`${players[0]}`).emit('youHost');
         }
     })
 
