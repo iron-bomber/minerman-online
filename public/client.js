@@ -2,6 +2,8 @@
 let socket = io.connect();
 let players = [];
 let playerNames = [];
+let spectators = [];
+let spectatorNames = [];
 let disconnected = [];
 
 let bomberData = {
@@ -36,7 +38,7 @@ socket.on('youHost', () => {
 });
 let sendDataInterval;
 socket.on('bomberDataRequest', () => {
-    if (players.indexOf(socket.id) < sel.numOfPlayers){
+    if (players.indexOf(socket.id) !== -1){
         bomberData.playerID = players.indexOf(socket.id);
         gameRunning = true;
         commands();
@@ -56,8 +58,11 @@ let playerClasses = {
 socket.on('playerArray', async playerArray => {
     players = playerArray.ids;
     playerNames = playerArray.names;
-    let el = await document.getElementById('lobby');
-    while (el.firstChild) await el.removeChild(el.firstChild);
+    spectators = playerArray.specIds;
+    spectatorNames = playerArray.specNames;
+    let playerList = await document.getElementById('players');
+    let spectatorList = await document.getElementById('spectators');
+    while (playerList.firstChild) await playerList.removeChild(playerList.firstChild);
     for (let player in players){
         let listItem = await document.createElement('li');
         let icon = await document.createElement('i');
@@ -70,7 +75,24 @@ socket.on('playerArray', async playerArray => {
         }
         await listItem.appendChild(icon);
         await listItem.appendChild(socketId);
-        await el.appendChild(listItem);
+        await playerList.appendChild(listItem);
+    }
+
+    while (spectatorList.firstChild) await spectatorList.removeChild(spectatorList.firstChild);
+    for (let spec in spectators){
+        let listItem = await document.createElement('li');
+        let icon = await document.createElement('i');
+        icon.className = 'fa fa-circle';
+        let socketId = await document.createElement('span');
+        if (disconnected.includes(spectators[spec])){
+            // socketId.innerText = spectatorNames[spec] + ' (disconnected)';
+            continue;
+        } else {
+            socketId.innerText = spectatorNames[spec];
+        }
+        await listItem.appendChild(icon);
+        await listItem.appendChild(socketId);
+        await spectatorList.appendChild(listItem);
     }
 });
 
@@ -349,40 +371,42 @@ function drawIcons(){
 }
 function commands() {
     if (gameRunning) {
-        document.onkeypress = function(e){
-            if(e.key === "s" || e.key === "S"){
-                bomberData.moveDown = true;
+        if (players.indexOf(socket.id) != -1){
+            document.onkeypress = function(e){
+                if(e.key === "s" || e.key === "S"){
+                    bomberData.moveDown = true;
+                }
+                if(e.key === "w" || e.key === "W"){
+                    bomberData.moveUp = true;
+                }
+                if(e.key === "a" || e.key === "A"){
+                    bomberData.moveLeft = true;
+                }
+                if(e.key === "d" || e.key === "D"){
+                    bomberData.moveRight = true;
+                }
+                // Drop bomb
+                if(e.keyCode === 32){
+                    socket.emit('dropABomb', bomberData.playerID);
+                }
             }
-            if(e.key === "w" || e.key === "W"){
-                bomberData.moveUp = true;
-            }
-            if(e.key === "a" || e.key === "A"){
-                bomberData.moveLeft = true;
-            }
-            if(e.key === "d" || e.key === "D"){
-                bomberData.moveRight = true;
-            }
-            // Drop bomb
-            if(e.keyCode === 32){
-                socket.emit('dropABomb', bomberData.playerID);
-            }
-        }
-        document.onkeyup = function(e){
-            if(e.key === "s" || e.key === "S"){
-                bomberData.moveDown = false;
-                bomberData.lastPressed = 'down'
-            }
-            if(e.key === "w" || e.key === "W"){
-                bomberData.moveUp = false;
-                bomberData.lastPressed = 'up';
-            }
-            if(e.key === "a" || e.key === "A"){
-                bomberData.moveLeft = false;
-                bomberData.lastPressed = 'left';
-            }
-            if(e.key === "d" || e.key === "D"){
-                bomberData.moveRight = false;
-                bomberData.lastPressed = 'right';
+            document.onkeyup = function(e){
+                if(e.key === "s" || e.key === "S"){
+                    bomberData.moveDown = false;
+                    bomberData.lastPressed = 'down'
+                }
+                if(e.key === "w" || e.key === "W"){
+                    bomberData.moveUp = false;
+                    bomberData.lastPressed = 'up';
+                }
+                if(e.key === "a" || e.key === "A"){
+                    bomberData.moveLeft = false;
+                    bomberData.lastPressed = 'left';
+                }
+                if(e.key === "d" || e.key === "D"){
+                    bomberData.moveRight = false;
+                    bomberData.lastPressed = 'right';
+                }
             }
         }
     } else if (selectNumOfPlayers) {
@@ -425,7 +449,7 @@ function commands() {
         }
 
     } else if (spriteSelectScreen) {
-        if (players.indexOf(socket.id) < sel.numOfPlayers){
+        if (players.indexOf(socket.id) != -1){
             console.log('startscreen input')
             //Sending select character controls to server
             document.onkeypress = function(e){
@@ -704,6 +728,14 @@ socket.on('chooseSprites', () => {
     spriteChooser();
     createSprites();
 })
+
+socket.on('gameStarted', (start) => {
+    s = start;
+    spriteChooser();
+    createSprites();
+    console.log('735 ',spriteArr);
+})
+
 function createSprites() {
     let player1 = {
         left: p11,

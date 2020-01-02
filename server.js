@@ -2,6 +2,8 @@ let gameReset = false;
 let bombIDs = 0;
 const players = [];
 const playerNames = [];
+const spectators = [];
+const spectatorNames = [];
 const disconnected = [];
 const express = require('express');
 const socket = require('socket.io');
@@ -52,21 +54,28 @@ let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
 // // SPRITE VARS
 // // let lastPressed = 'down';
 // // let lastPressed2 = 'ArrowDown';
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     console.log('connection made', new Date());
     console.log(socket.id);
     let thePlayers = {
         ids: players,
-        names: playerNames
+        names: playerNames,
+        specIds: spectators,
+        specNames: spectatorNames
     };
     io.sockets.emit('playerArray', (thePlayers));
+    if (gameRunning){
+        io.to(socket.id).emit('allData', allData);
+        io.to(socket.id).emit('gameStarted', s);
+    }
     // Select screen controls received from user
     socket.on('selectingSprite', (select) => {
         if (players.indexOf(select.socketID) < sel.numOfPlayers){
             s.movePosition(s[`p${players.indexOf(select.socketID)+1}`], select.key);
         }
     })
-
+    console.log('71 ',spriteSelect);
+    console.log('72 ',gameRunning);
 
     socket.on('disconnect', () => {
         if (players.indexOf(socket.id) != -1){
@@ -79,7 +88,9 @@ io.on('connection', (socket) => {
                 playerNames.splice(i, 1);
                 let thePlayers = {
                     ids: players,
-                    names: playerNames
+                    names: playerNames,
+                    specIds: spectators,
+                    specNames: spectatorNames
                 };
                 io.sockets.emit('playerArray', thePlayers);
                 io.to(`${players[0]}`).emit('youHost');
@@ -89,15 +100,37 @@ io.on('connection', (socket) => {
 
     socket.on('playerID', (newPlayer)=>{
         if (!players.includes(newPlayer.id)){
-            players.push(newPlayer.id);
-            playerNames.push(newPlayer.name);
+            console.log(spriteSelect)
+            if (spriteSelect){
+                if (players.length >= sel.numOfPlayers ){
+                    spectators.push(newPlayer.id);
+                    spectatorNames.push(newPlayer.name);
+                } else {
+                    players.push(newPlayer.id);
+                    playerNames.push(newPlayer.name);
+                }
+            } else if (!gameRunning){
+                if (players.length < 4){
+                    players.push(newPlayer.id);
+                    playerNames.push(newPlayer.name);
+                } else {
+                    spectators.push(newPlayer.id);
+                    spectatorNames.push(newPlayer.name);
+                }
+            }
             if (spriteSelect) {
                 io.to(socket.id).emit('selectNumOfPlayers', sel);
                 io.to(socket.id).emit('selectYourSprite');
             }
+            if (gameRunning){
+                spectators.push(newPlayer.id);
+                spectatorNames.push(newPlayer.name);
+            }
             let thePlayers = {
                 ids: players,
-                names: playerNames
+                names: playerNames,
+                specIds: spectators,
+                specNames: spectatorNames
             };
             io.sockets.emit('playerArray', (thePlayers));
             console.log('85 ', players.length)
@@ -723,6 +756,7 @@ class BombMap {
             ['wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall', 'wall']
         ];
     }
+
     placeRandomPowerup(){
         let powers = [
             "speed",
@@ -854,6 +888,19 @@ let m;
 function spriteSelectScreen() {
     playersLeft = sel.numOfPlayers;
     numOfPlayers = sel.numOfPlayers;
+    let newSpectators = players.splice(numOfPlayers, players.length - numOfPlayers);
+    let newSpectatorNames = playerNames.splice(numOfPlayers, playerNames.length - numOfPlayers);
+    for (let i in newSpectators){
+        spectators.push(newSpectators[i]);
+        spectatorNames.push(newSpectatorNames[i]);
+    }
+    let thePlayers = {
+        ids: players,
+        names: playerNames,
+        specIds: spectators,
+        specNames: spectatorNames
+    };
+    io.sockets.emit('playerArray', (thePlayers));
     io.sockets.emit('selectYourSprite');
     let pReady = {};
     for (let i = 1; i <= sel.numOfPlayers; i++){
@@ -888,6 +935,7 @@ function startNewRound() {
     g = new Game();
     m = new BombMap();
     for (let i = 1; i <= sel.numOfPlayers; i++){
+        console.log('created player ', i);
         g.createPlayer(startingXYIJ[`p${i}`][0], startingXYIJ[`p${i}`][1], startingXYIJ[`p${i}`][2], startingXYIJ[`p${i}`][3], i);
     }
     m.generateRocks();
