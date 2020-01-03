@@ -42,6 +42,18 @@ socket.on('resetTheGame', () => {
     playerTwoDead = false;
     playerThreeDead = false;
     playerFourDead = false;
+    if (disconnected.includes(players[0])){
+        playerOneDead = true;
+    }
+    if (disconnected.includes(players[1])){
+        playerTwoDead = true;
+    }
+    if (disconnected.includes(players[2])){
+        playerThreeDead = true;
+    }
+    if (disconnected.includes(players[3])){
+        playerFourDead = true;
+    }
     playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
     gameReset = false;
     startScreenControls = false;
@@ -340,7 +352,10 @@ class Sprite {
         this.frameCounter++;
     }
 
-    drawDeath(playerX, playerY){
+    drawDeath(playerX, playerY, stillInGame){
+        if (!stillInGame){
+            this.deathDone = true;
+        }
         this.totalFrames = this.frameRate*12;
         if(!this.deathDone){
             if(this.ssNum < 6){
@@ -856,6 +871,18 @@ socket.on('resetLives', () => {
     playerTwoDead = false;
     playerThreeDead = false;
     playerFourDead = false;
+    if (disconnected.includes(players[0])){
+        playerOneDead = true;
+    }
+    if (disconnected.includes(players[1])){
+        playerTwoDead = true;
+    }
+    if (disconnected.includes(players[2])){
+        playerThreeDead = true;
+    }
+    if (disconnected.includes(players[3])){
+        playerFourDead = true;
+    }
 })
 socket.on('playerScores', (data) => {
     console.log(
@@ -878,16 +905,32 @@ function mainLoop(){
 
     //Death check
     if (playerOneDead) {
-        spriteArr[0].drawDeath(playerOneX, playerOneY);
+        if (!disconnected.includes(players[0])){
+            spriteArr[0].drawDeath(playerOneX, playerOneY, true);
+        } else {
+            spriteArr[0].drawDeath(playerOneX, playerOneY, false);
+        }
     }
     if (playerTwoDead) {
-        spriteArr[1].drawDeath(playerTwoX, playerTwoY);
+        if (!disconnected.includes(players[1])){
+            spriteArr[1].drawDeath(playerTwoX, playerTwoY, true);
+        } else {
+            spriteArr[1].drawDeath(playerOneX, playerOneY, false);
+        }
     }
     if (playerThreeDead) {
-        spriteArr[2].drawDeath(playerThreeX, playerThreeY);
+        if (!disconnected.includes(players[2])){
+            spriteArr[2].drawDeath(playerThreeX, playerThreeY, true);
+        } else {
+            spriteArr[2].drawDeath(playerOneX, playerOneY, false);
+        }
     }
     if (playerFourDead) {
-        spriteArr[3].drawDeath(playerFourX, playerFourY);
+        if (!disconnected.includes(players[3])){
+            spriteArr[3].drawDeath(playerFourX, playerFourY, true);
+        } else {
+            spriteArr[3].drawDeath(playerOneX, playerOneY, false);
+        }
     }
 
     //PLAYER SPRITES
