@@ -75,14 +75,23 @@ io.on('connection', async (socket) => {
             s.movePosition(s[`p${players.indexOf(select.socketID)+1}`], select.key);
         }
     })
-    console.log('71 ',spriteSelect);
-    console.log('72 ',gameRunning);
 
     socket.on('disconnect', () => {
         if (players.indexOf(socket.id) != -1){
             if (gameRunning){
                 disconnected.push(socket.id);
                 io.sockets.emit('playerDisconnected', disconnected);
+                if (disconnected.length >= sel.numOfPlayers - 1){
+                    for (let i in disconnected){
+                        for (let j in players){
+                            if (players[j] == disconnected[i]){
+                                players.splice(j, 1);
+                                playerNames.splice(j, 1)
+                            }
+                        }
+                    }
+                    selectHowManyPlayers();
+                }
             } else {
                 let i = players.indexOf(socket.id);
                 players.splice(i, 1);
@@ -94,7 +103,7 @@ io.on('connection', async (socket) => {
                     specNames: spectatorNames
                 };
                 io.sockets.emit('playerArray', thePlayers);
-                io.to(`${players[0]}`).emit('youHost');
+                selectHowManyPlayers();
             }
         } else if (spectators.indexOf(socket.id) != -1){
             let i = spectators.indexOf(socket.id);
@@ -107,11 +116,11 @@ io.on('connection', async (socket) => {
                 specNames: spectatorNames
             };
             io.sockets.emit('playerArray', thePlayers);
-            io.to(`${players[0]}`).emit('youHost');
         }
     })
 
     socket.on('playerID', (newPlayer)=>{
+        console.log('welcome to the lobby');
         if (!players.includes(newPlayer.id)){
             console.log(spriteSelect)
             if (spriteSelect){
@@ -155,11 +164,19 @@ io.on('connection', async (socket) => {
 
     function selectHowManyPlayers (){
         console.log('select screen');
+        io.sockets.emit('resetTheGame');
         selectNumOfPlayers = true;
         spriteSelect = false;
         gameRunning = false;
-        clearInterval(mainGameInterval)
+        clearInterval(mainGameInterval);
         sel = new Select();
+        let thePlayers = {
+            ids: players,
+            names: playerNames,
+            specIds: spectators,
+            specNames: spectatorNames
+        };
+        io.sockets.emit('playerArray', thePlayers);
         let selectNumOfPlayersInterval = setInterval(() => {
             io.sockets.emit('selectNumOfPlayers', sel)
             if(!selectNumOfPlayers) {

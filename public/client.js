@@ -30,10 +30,30 @@ socket.on('spriteSelectScreen', (start) => {
     startLoop();
 })
 
+
+socket.on('resetTheGame', () => {
+    gameRunning = false;
+    spriteSelectScreen = false;
+    selectNumOfPlayers = true;
+    gameComplete = false;
+    stopMainLoop = false;
+    playerOneDead = false;
+    playerTwoDead = false;
+    playerThreeDead = false;
+    playerFourDead = false;
+    playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
+    gameReset = false;
+    startScreenControls = false;
+    clearInterval(sendDataInterval);
+})
+
 // Server tells client they are host
 socket.on('youHost', () => {
     console.log('you are the host')
     host = true;
+    gameRunning = false;
+    spriteSelectScreen = false;
+    selectNumOfPlayers = true;
     commands();
 });
 let sendDataInterval;
