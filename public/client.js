@@ -33,6 +33,7 @@ socket.on('spriteSelectScreen', (start) => {
 
 socket.on('resetTheGame', () => {
     gameRunning = false;
+    sound.pauseGameMusic()
     spriteSelectScreen = false;
     selectNumOfPlayers = true;
     gameComplete = false;
@@ -962,7 +963,10 @@ class Sound{
     }
 
     pauseGameMusic(){
-        this.gameMusic.pause()
+        console.log('pausing')
+        document.getElementById('gameMusic').pause();
+        var sounds = document.getElementsByTagName('audio');
+        for(i=0; i<sounds.length; i++) sounds[i].pause();
         this.songPlaying = false;
     }
 
