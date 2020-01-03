@@ -36,6 +36,7 @@ let playerFourY;
 let numOfPlayers
 let playersLeft;
 let gameComplete = false;
+let sel;
 // Emits different screens to players
 let selectNumOfPlayers = true;
 let spriteSelect = false;
@@ -147,19 +148,28 @@ io.on('connection', async (socket) => {
             io.sockets.emit('playerArray', (thePlayers));
             console.log('85 ', players.length)
             if (players.length === 1) {
-                console.log('select screen');
-                let selectNumOfPlayersInterval = setInterval(() => {
-                    io.sockets.emit('selectNumOfPlayers', sel)
-                    if(!selectNumOfPlayers) {
-                        console.log('select screen done, start screen enabled');
-                        clearInterval(selectNumOfPlayersInterval);
-                        spriteSelectScreen();
-                    }
-                }, 1000/30)
-                io.to(`${players[0]}`).emit('youHost');
+                selectHowManyPlayers();
             }
         }
     })
+
+    function selectHowManyPlayers (){
+        console.log('select screen');
+        selectNumOfPlayers = true;
+        spriteSelect = false;
+        gameRunning = false;
+        clearInterval(mainGameInterval)
+        sel = new Select();
+        let selectNumOfPlayersInterval = setInterval(() => {
+            io.sockets.emit('selectNumOfPlayers', sel)
+            if(!selectNumOfPlayers) {
+                console.log('select screen done, start screen enabled');
+                clearInterval(selectNumOfPlayersInterval);
+                spriteSelectScreen();
+            }
+        }, 1000/30)
+        io.to(`${players[0]}`).emit('youHost');
+    }
     
     //In game controls received from user
     socket.on('bomberData', (bomberData) => {
@@ -198,19 +208,6 @@ io.on('connection', async (socket) => {
     socket.on('selectCommands', data => {
         sel.movePosition(sel.p1, data.key);
     })
-
-
-    // if (startGame) {
-    //     let emitGame = setInterval(() => {
-    //         if (!stopMainLoop) {
-    //             mainLoop();
-    //             io.sockets.emit('allData', allData);
-    //         } else {
-    //             clearInterval(emitGame);
-    //         }
-            
-    //     }, 1000/60)
-    // }
     
 });
 
@@ -878,18 +875,6 @@ function mainLoop(){
             }
         }
     }
-
-    //GRID PLACER & MoveCheck
-
-
-
-    // if(gameComplete == true){
-    //     //EVENTUALLY GO TO SCORE SCREEN
-    //     console.log('happ')
-    //     ctx.font = "30px Arial";
-    //     ctx.fillText(`Space to restart :)`, 350, 400);
-    //     //////
-    // }
 }
 //END OF MAIN LOOP
 
@@ -1187,5 +1172,5 @@ class Select{
         }
     }
 }
-let sel = new Select();
+
 
