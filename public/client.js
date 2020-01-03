@@ -990,20 +990,24 @@ let sound = new Sound();
 
 //Sound effect socket.ons
 socket.on('explode', ()=>{
-    let exp = document.getElementById('explode').play();
+    let exp = document.getElementById('explode')
+    exp.play();
     exp.volume = 0.1
 })
 
 socket.on('bombUp', ()=>{
-    let bomb = document.getElementById('bombUp').play()
+    let bomb = document.getElementById('bombUp')
+    bomb.play()
     bomb.volume = 0.5
 })
 socket.on('speedUp', ()=>{
-    let speed = document.getElementById('speedUp').play()
+    let speed = document.getElementById('speedUp')
+    speed.play()
     speed.volume = 0.5
 })
 socket.on('powerUp', ()=>{
-    let power = document.getElementById('powerUp').play()
+    let power = document.getElementById('powerUp')
+    power.play()
     power.volume = 0.5
 })
 
