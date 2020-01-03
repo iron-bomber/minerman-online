@@ -957,11 +957,10 @@ class Sound{
 
     //In game music control
     playGameMusic(){
-
-    // this.gameMusic.crossOrigin = 'anonymous';
-    let gm = document.getElementById('gameMusic').play();
-    gm.volume = .4;
+        let gm = document.getElementById('gameMusic').play();
+        gm.volume = .01;
     }
+
     pauseGameMusic(){
         this.gameMusic.pause()
         this.songPlaying = false;
