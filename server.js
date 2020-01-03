@@ -204,6 +204,7 @@ io.on('connection', async (socket) => {
     
 });
 
+let selectNumOfPlayersInterval;
 
 function selectHowManyPlayers (){
     console.log('select screen');
@@ -216,6 +217,7 @@ function selectHowManyPlayers (){
     clearInterval(mainGameInterval);
     clearInterval(startTheGame);
     clearInterval(spriteSelectScreenInterval);
+    clearInterval(selectNumOfPlayersInterval)
     disconnected = [];
     sel = new Select();
     while (players.length < 4 && spectators.length > 0) {
@@ -231,7 +233,7 @@ function selectHowManyPlayers (){
         specNames: spectatorNames
     };
     io.sockets.emit('playerArray', thePlayers);
-    let selectNumOfPlayersInterval = setInterval(() => {
+    selectNumOfPlayersInterval = setInterval(() => {
         io.sockets.emit('selectNumOfPlayers', sel)
         if(!selectNumOfPlayers) {
             console.log('select screen done, start screen enabled');
