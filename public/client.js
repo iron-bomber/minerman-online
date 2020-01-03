@@ -1001,15 +1001,16 @@ class Sound{
 
     //In game music control
     playGameMusic(){
-        let gm = document.getElementById('gameMusic').play();
-        gm.volume = .01;
+        let it = document.getElementById('gameMusic')
+        it.play()
+        it.volume = 0.1;
     }
 
     pauseGameMusic(){
         console.log('pausing')
-        document.getElementById('gameMusic').pause();
-        var sounds = document.getElementsByTagName('audio');
-        for(i=0; i<sounds.length; i++) sounds[i].pause();
+        let it = document.getElementById('gameMusic')
+        it.pause();
+        it.currentTime = 0;
         this.songPlaying = false;
     }
 
@@ -1032,21 +1033,25 @@ let sound = new Sound();
 
 //Sound effect socket.ons
 socket.on('explode', ()=>{
-    let exp = document.getElementById('explode').play();
-    exp.volume = ".8"
+    let exp = document.getElementById('explode')
+    exp.play();
+    exp.volume = 0.1
 })
 
 socket.on('bombUp', ()=>{
-    let bomb = document.getElementById('bombUp').play()
-    bomb.volume = ".5"
+    let bomb = document.getElementById('bombUp')
+    bomb.play()
+    bomb.volume = 0.5
 })
 socket.on('speedUp', ()=>{
-    let speed = document.getElementById('speedUp').play()
-    speed.volume = ".5"
+    let speed = document.getElementById('speedUp')
+    speed.play()
+    speed.volume = 0.5
 })
 socket.on('powerUp', ()=>{
-    let power = document.getElementById('powerUp').play()
-    power.volume = ".5"
+    let power = document.getElementById('powerUp')
+    power.play()
+    power.volume = 0.5
 })
 
 
