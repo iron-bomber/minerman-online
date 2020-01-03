@@ -745,7 +745,8 @@ function spriteChooser(){
 let m;
 let playerArr;
 let spriteArr = [];
-socket.on('chooseSprites', () => {
+socket.on('chooseSprites', (start) => {
+    s = start;
     spriteChooser();
     createSprites();
 })
