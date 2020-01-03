@@ -45,6 +45,7 @@ socket.on('resetTheGame', () => {
     gameReset = false;
     startScreenControls = false;
     clearInterval(sendDataInterval);
+    spriteArr = [];
 })
 
 // Server tells client they are host

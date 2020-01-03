@@ -168,6 +168,7 @@ io.on('connection', async (socket) => {
         selectNumOfPlayers = true;
         spriteSelect = false;
         gameRunning = false;
+        timesSprite = true;
         clearInterval(mainGameInterval);
         sel = new Select();
         let thePlayers = {
