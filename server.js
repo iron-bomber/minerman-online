@@ -208,7 +208,6 @@ let selectNumOfPlayersInterval;
 
 function selectHowManyPlayers (){
     console.log('select screen');
-    io.sockets.emit('resetTheGame');
     selectNumOfPlayers = true;
     spriteSelect = false;
     gameRunning = false;
@@ -220,6 +219,7 @@ function selectHowManyPlayers (){
     clearInterval(selectNumOfPlayersInterval)
     disconnected = [];
     sel = new Select();
+    io.sockets.emit('resetTheGame');
     while (players.length < 4 && spectators.length > 0) {
         players.push(spectators[0]);
         playerNames.push(spectatorNames[0]);
