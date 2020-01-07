@@ -1098,25 +1098,17 @@ class Startscreen{
                 if(player.position == 4){
                     player.position = 2;
                 }
-                if(player.position == 5){
-                    player.position = 3;
-                }
-                if(player.position == 6){
-                    player.position = 4;
-                }
                 break;
+
             case "a":
-                
                 if(player.position == 2){
                     player.position = 1;
                 }
                 if(player.position == 4){
                     player.position = 3;
                 }
-                if(player.position == 6){
-                    player.position = 5;
-                }
                 break;
+
             case "s":
                 
                 if(player.position == 1){
@@ -1125,13 +1117,8 @@ class Startscreen{
                 else if(player.position == 2){
                     player.position = 4;
                 }
-                else if(player.position == 3){
-                    player.position = 5;
-                }
-                else if(player.position == 4){
-                    player.position = 6;
-                }
                 break;
+
             case "d":
                 
                 if(player.position == 1){
@@ -1140,10 +1127,8 @@ class Startscreen{
                 if(player.position == 3){
                     player.position = 4;
                 }
-                if(player.position == 5){
-                    player.position = 6;
-                }
                 break;
+
             case "spacebar":
                 
                 
@@ -1266,8 +1251,8 @@ class Select{
                         selectNumOfPlayers = false;
                         spriteSelect = true;
                     }
-
                 }
+
                 break;
         }
     }

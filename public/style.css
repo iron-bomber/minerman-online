@@ -220,16 +220,16 @@ ul.chat-user li a:hover{
 }
 
 .player1{
-    color: yellow;
+    color: #f6c324;
 }
 .player2{
-    color: blue;
+    color: #0064fa;
 }
 .player3{
-    color: red;
+    color: #e83232;
 }
 .player4{
-    color: green;
+    color: #009632;
 }
 
 .start-btn{

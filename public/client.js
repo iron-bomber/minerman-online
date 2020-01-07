@@ -180,7 +180,9 @@ function startLoop(){
         
     }    
     //Draw start button
-    ctx.drawImage(startBtn, 0, 0, 380, 170, 270, 550, 300, 130);
+        // ctx.drawImage(startBtn, 0, 0, 380, 170, 270, 550, 300, 130);
+    
+
 }
 function drawBorderSelect(player){
         
@@ -255,12 +257,6 @@ function drawBorder(player, i){
         }
         if(player.position == 4){
             ctx.drawImage(allTheBorders[`p${i}0`], 0, 0, 560, 939, 468, 325, 190, 180);//Bottom Right
-        }
-        if(player.position == 5){
-            ctx.drawImage(allTheBorders[`p${i}1`], 0, 0, 940, 560, 268, 545, 320, 140);//Ready button
-        }
-        if(player.position == 6){
-            ctx.drawImage(allTheBorders[`p${i}1`], 0, 0, 940, 560, 268, 545, 320, 140);//Ready button
         }
     }
 }
