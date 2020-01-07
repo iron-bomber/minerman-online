@@ -353,10 +353,11 @@ class Sprite {
     }
 
     drawDeath(playerX, playerY, stillInGame){
+        this.totalFrames = this.frameRate*12;
         if (!stillInGame){
             this.deathDone = true;
+            this.frameCounter = this.totalFrames;
         }
-        this.totalFrames = this.frameRate*12;
         if(!this.deathDone){
             if(this.ssNum < 6){
                 if(this.frameCounter < this.totalFrames){
@@ -915,21 +916,21 @@ function mainLoop(){
         if (!disconnected.includes(players[1])){
             spriteArr[1].drawDeath(playerTwoX, playerTwoY, true);
         } else {
-            spriteArr[1].drawDeath(playerOneX, playerOneY, false);
+            spriteArr[1].drawDeath(playerTwoX, playerTwoY, false);
         }
     }
     if (playerThreeDead) {
         if (!disconnected.includes(players[2])){
             spriteArr[2].drawDeath(playerThreeX, playerThreeY, true);
         } else {
-            spriteArr[2].drawDeath(playerOneX, playerOneY, false);
+            spriteArr[2].drawDeath(playerThreeX, playerThreeY, false);
         }
     }
     if (playerFourDead) {
         if (!disconnected.includes(players[3])){
             spriteArr[3].drawDeath(playerFourX, playerFourY, true);
         } else {
-            spriteArr[3].drawDeath(playerOneX, playerOneY, false);
+            spriteArr[3].drawDeath(playerFourX, playerFourY, false);
         }
     }
 
