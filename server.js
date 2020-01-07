@@ -246,7 +246,7 @@ function selectHowManyPlayers (){
     clearInterval(mainGameInterval);
     clearInterval(startTheGame);
     clearInterval(spriteSelectScreenInterval);
-    clearInterval(selectNumOfPlayersInterval)
+    clearInterval(selectNumOfPlayersInterval);
     disconnected = [];
     sel = new Select();
     io.sockets.emit('resetTheGame');
@@ -887,6 +887,17 @@ function newRound() {
 
 function newGame() {
     setTimeout(() => {
+        if (disconnected.length > 0){
+            for (let i in disconnected){
+                for (let j in players){
+                    if (players[j] == disconnected[i]){
+                        players.splice(j, 1);
+                        playerNames.splice(j, 1)
+                    }
+                }
+            }
+            selectHowManyPlayers();
+        }
         selectHowManyPlayers();
     }, 3000)
 }
@@ -915,14 +926,7 @@ function mainLoop(){
             for(let i = 0; i < sel.numOfPlayers; i++) {
                 if (typeof g.playerArr[i] === 'object') {
                     playerScores[`p${i+1}`] += 1;
-                    if (playerScores[`p${i+1}`] == 3){
-                        gameComplete = true;
-                    }
-                }
-            }
-            for(let i = 0; i < sel.numOfPlayers; i++) {
-                if (typeof g.playerArr[i] === 'object') {
-                    if(playerScores[`p${i+1}`] > 2){
+                    if (playerScores[`p${i+1}`] > 2){
                         gameComplete = true;
                     }
                 }
