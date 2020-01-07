@@ -81,6 +81,36 @@ io.on('connection', async (socket) => {
             if (gameRunning){
                 disconnected.push(socket.id);
                 io.sockets.emit('playerDisconnected', disconnected);
+                switch(players.indexOf(socket.id)){
+                    case 0:
+                        if (!playerOneDead){
+                            g.playerArr.splice(0, 1, '')
+                            playersLeft--;
+                            playerOneDead = true;
+                        }
+                        break;
+                    case 1:
+                        if (!playerTwoDead){
+                            g.playerArr.splice(1, 1, '')
+                            playersLeft--;
+                            playerTwoDead = true;
+                        }
+                        break;
+                    case 2:
+                        if (!playerThreeDead){
+                            g.playerArr.splice(2, 1, '')
+                            playersLeft--;
+                            playerThreeDead = true;
+                        }
+                        break;
+                    case 3:
+                        if (!playerFourDead){
+                            g.playerArr.splice(3, 1, '')
+                            playersLeft--;
+                            playerFourDead = true;
+                        }
+                        break;
+                }
                 if (disconnected.length >= sel.numOfPlayers - 1){
                     for (let i in disconnected){
                         for (let j in players){
@@ -848,7 +878,7 @@ class Game {
 function newRound() {
     setTimeout(() => {
         clearInterval(mainGameInterval);
-        playersLeft = sel.numOfPlayers;
+        playersLeft = sel.numOfPlayers - disconnected.length;
         io.sockets.emit('clearInterval');
         io.sockets.emit('resetLives');
         startNewRound();
@@ -993,6 +1023,22 @@ function startNewRound() {
     playerTwoDead = false;
     playerThreeDead = false;
     playerFourDead = false;
+    for (let i in disconnected){
+        switch(players.indexOf(disconnected[i])){
+            case 0:
+                playerOneDead = true;
+                break;
+            case 1:
+                playerTwoDead = true;
+                break;
+            case 2:
+                playerThreeDead = true;
+                break;
+            case 3:
+                playerFourDead = true;
+                break;
+        }
+    }
     mainGameInterval = setInterval(() => {
         io.sockets.emit('allData', allData);
         io.sockets.emit('serverFrame');
