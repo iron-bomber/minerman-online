@@ -8,6 +8,7 @@ let disconnected = [];
 const express = require('express');
 const socket = require('socket.io');
 let gameRunning = false;
+let displayRestartMessage = false;
 
 // App setup
 const app = express();
@@ -120,6 +121,7 @@ io.on('connection', async (socket) => {
                             }
                         }
                     }
+                    displayRestartMessage = true;
                     selectHowManyPlayers();
                 }
             } else {
@@ -237,7 +239,11 @@ io.on('connection', async (socket) => {
 let selectNumOfPlayersInterval;
 
 function selectHowManyPlayers (){
-    console.log('select screen');
+    console.log('select screen', displayRestartMessage);
+    if(displayRestartMessage){
+            io.sockets.emit('resetMessage')
+            displayRestartMessage = false;
+    }
     selectNumOfPlayers = true;
     spriteSelect = false;
     gameRunning = false;
@@ -1002,6 +1008,7 @@ function spriteSelectScreen() {
     }, 1000/40)
 
 }
+
 let timesSprite = true;
 function startNewRound() {
     gameRunning = true;

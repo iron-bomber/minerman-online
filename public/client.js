@@ -6,6 +6,7 @@ let spectators = [];
 let spectatorNames = [];
 let disconnected = [];
 let myName= "";
+let displayRestartMessage = false;
 
 let bomberData = {
     moveDown: false,
@@ -200,6 +201,11 @@ function drawBorderSelect(player){
 function selectLoop(){
     ctx.clearRect(0, 0, 850, 850);
     ctx.drawImage(desertBG, 0, 0, 750, 992, 0, 0, 850, 850);
+
+    if(displayRestartMessage){
+        ctx.font = '40px serif';
+        ctx.fillText('Players disconnected, game reset', 200, 50);
+    }
 
     //Minerman Logo
         ctx.drawImage(minerman, 0, 0, 180, 36, 115, 100, 600, 100);
@@ -1091,3 +1097,9 @@ async function divKill(){
     element.remove();
 }
 
+socket.on('resetMessage', ()=>{
+    displayRestartMessage = true;
+    setTimeout(() => {
+        displayRestartMessage = false;
+    }, 4000);
+})
