@@ -5,6 +5,7 @@ let playerNames = [];
 let spectators = [];
 let spectatorNames = [];
 let disconnected = [];
+let myName= "";
 
 let bomberData = {
     moveDown: false,
@@ -105,7 +106,11 @@ socket.on('playerArray', async playerArray => {
         if (disconnected.includes(players[player])){
             socketId.innerText = playerNames[player] + ' (disconnected)';
         } else {
-            socketId.innerText = playerNames[player];
+            if(playerNames[player] == myName){
+                socketId.innerText = playerNames[player] + " (you)";
+            }else{
+                socketId.innerText = playerNames[player];
+            }
         }
         await listItem.appendChild(icon);
         await listItem.appendChild(socketId);
@@ -1071,10 +1076,10 @@ document.querySelectorAll("button").forEach( function(item) {
 })
 
 async function divKill(){
-    let playerUsername = await document.getElementById('nameinput').value;
+    myName = await document.getElementById('nameinput').value;
     let newUser = {
         id: socket.id,
-        name: playerUsername
+        name: myName
     }
     console.log('new user ', newUser);
     socket.emit('playerID', newUser);

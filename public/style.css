@@ -7,6 +7,22 @@ body{
     padding: 0;
 }
 
+.side{
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.theP{
+    background-color: #32033f;
+    border-radius: 5px;
+    font-weight: bold; 
+    font-size: 1.5em; 
+    margin-bottom: 0; 
+    margin-left: 8px;
+     padding: 5px;
+}
+
 .tutorial{
     position: absolute;
     height: 100vh; 
@@ -32,6 +48,10 @@ body{
     max-width: 300px;
     height: 80px;
     text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
 }
 
 #nameinput{
