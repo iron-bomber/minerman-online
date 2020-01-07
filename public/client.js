@@ -149,10 +149,10 @@ socket.on('playerDisconnected', async disconnectedPlayers => {
                 socketId.innerText = playerNames[player] + ' (disconnected)';
             } else {
                 if(playerNames[player] == myName){
-                socketId.innerText = playerNames[player] + " (you)";
-            }else{
-                socketId.innerText = playerNames[player];
-            }
+                    socketId.innerText = playerNames[player] + " (you)";
+                }else{
+                    socketId.innerText = playerNames[player];
+                }
             }
             await listItem.appendChild(icon);
             await listItem.appendChild(socketId);
