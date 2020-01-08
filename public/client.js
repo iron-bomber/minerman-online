@@ -6,6 +6,7 @@ let spectators = [];
 let spectatorNames = [];
 let disconnected = [];
 let myName= "";
+let chatMessages = [];
 let displayRestartMessage = false;
 
 let bomberData = {
@@ -1099,3 +1100,54 @@ socket.on('resetMessage', ()=>{
         displayRestartMessage = false;
     }, 4000);
 })
+// <div class="new-message">
+//     <div class="message-info">
+//         <span class="username">Great Wing</span><span class="timestamp">12:51</span>
+//     </div>
+//     <div class="the-message">
+//         <p>blah blah blah</p>
+//     </div>
+// </div>
+socket.on('chatRoom', incomingMessage => {    
+    let theChatRoom = document.getElementById('chatRoom');
+
+    // Parent element
+    let newMessage = document.createElement('div');
+    newMessage.className = 'new-message';
+
+    // Info
+    let messageInfo = document.createElement('div');
+    messageInfo.className = 'message-info';
+    let theUsername = document.createElement('span');
+    theUsername.className = 'username';
+    theUsername.innerText = incomingMessage.name;
+    theUsername.style.color = incomingMessage.color;
+    let timeStamp = document.createElement('span');
+    timeStamp.className = 'timestamp';
+    timeStamp.innerText = incomingMessage.time;
+
+    // Message
+    let theMessage = document.createElement('div');
+    theMessage.className = 'the-message';
+    let messageText = document.createElement('p');
+    messageText.innerText = incomingMessage.message;
+
+    // Appending
+    messageInfo.appendChild(theUsername);
+    messageInfo.appendChild(timeStamp);
+    theMessage.appendChild(messageText);
+    newMessage.appendChild(messageInfo);
+    newMessage.appendChild(messageText);
+
+    theChatRoom.appendChild(newMessage)
+});
+
+async function sendMessage(){
+    let theMessage = await document.getElementById('newMessage').value;
+    document.getElementById('newMessage').value = "";
+    let newMessage = {
+        id: socket.id,
+        text: theMessage
+    }
+    socket.emit('newMessage', newMessage);
+}

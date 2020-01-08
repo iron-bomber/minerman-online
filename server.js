@@ -2,7 +2,7 @@ let gameReset = false;
 let bombIDs = 0;
 const players = [];
 const playerNames = [];
-const playerColors = [];
+const playerColors = ['#f6c324', '#0064fa', '#e83232', '#009632'];
 const spectators = [];
 const spectatorNames = [];
 const spectatorColors = [];
@@ -54,7 +54,6 @@ let startingXYIJ = {
 let mainGameInterval;
 
 let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
-
 
 // // SPRITE VARS
 // // let lastPressed = 'down';
@@ -166,20 +165,15 @@ io.on('connection', async (socket) => {
             if (spriteSelect){
                 if (players.length >= sel.numOfPlayers ){
                     let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
-                    while (spectatorColors.includes(newColor)){
+                    while (spectatorColors.includes(newColor) || playerColors.includes(newColor)){
                         newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
                     }
                     spectators.push(newPlayer.id);
                     spectatorNames.push(newPlayer.name);
                     spectatorColors.push(newColor);
                 } else {
-                    let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
-                    while (playerColors.includes(newColor)){
-                        newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
-                    }
                     players.push(newPlayer.id);
                     playerNames.push(newPlayer.name);
-                    playerColors.push(newColor);
                 }
                 io.to(socket.id).emit('selectNumOfPlayers', sel);
                 io.to(socket.id).emit('selectYourSprite');
@@ -188,12 +182,22 @@ io.on('connection', async (socket) => {
                     players.push(newPlayer.id);
                     playerNames.push(newPlayer.name);
                 } else {
+                    let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    while (spectatorColors.includes(newColor) || playerColors.includes(newColor)){
+                        newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    }
                     spectators.push(newPlayer.id);
                     spectatorNames.push(newPlayer.name);
+                    spectatorColors.push(newColor);
                 }
             } else {
+                let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                while (spectatorColors.includes(newColor) || playerColors.includes(newColor)){
+                    newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                }
                 spectators.push(newPlayer.id);
                 spectatorNames.push(newPlayer.name);
+                spectatorColors.push(newColor);
             }
             let thePlayers = {
                 ids: players,
@@ -201,9 +205,7 @@ io.on('connection', async (socket) => {
                 specIds: spectators,
                 specNames: spectatorNames
             };
-            chatRoom.colors.push(newColor);
             io.sockets.emit('playerArray', (thePlayers));
-            io.sockets.emit('chatRoom', chatRoom);
             console.log('85 ', players.length)
             if (players.length === 1) {
                 selectHowManyPlayers();
@@ -213,8 +215,24 @@ io.on('connection', async (socket) => {
     
 
     socket.on('newMessage', message => {
-        message.timestamp = Date.now();
-        chatRoom.messages.push(message);
+        let theTime = new Date().toLocaleTimeString();
+        let theColor;
+        let theName;
+        if (players.includes(message.id)){
+            theColor = playerColors[players.indexOf(message.id)];
+            theName = playerNames[players.indexOf(message.id)];
+        } else {
+            theColor = spectatorColors[spectators.indexOf(message.id)];
+            theName = spectatorNames[spectators.indexOf(message.id)];
+        }
+        let newMessage = {
+            message: message.text,
+            name: theName,
+            color: theColor,
+            time: theTime
+        }
+        chatRoom.push(newMessage);
+        io.sockets.emit('chatRoom', newMessage);
     })
     //In game controls received from user
     socket.on('bomberData', (bomberData) => {

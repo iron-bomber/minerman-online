@@ -154,10 +154,11 @@ body{
 .right {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     height: 100%;
     width: 100%;
+    overflow: hidden;
     /* color: white;
     border: 1px solid white; */
 }
@@ -227,6 +228,46 @@ ul.chat-user li a:hover{
 }
 .player4{
     color: #009632;
+}
+
+.chat-room{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    overflow-y:auto;
+    width: 90%;
+    height: 650px;
+    position:relative;
+}
+
+.new-message{
+    border: 1px solid gray;
+    border-radius: 8px;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-right: 5px;
+}
+
+.timestamp{
+    font-size: 0.6rem;
+}
+
+.the-message{
+    font-size: 0.8rem;
+}
+
+.send-message{
+    margin-top: 5px;
+    margin-bottom: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 
 .start-btn{
