@@ -9,7 +9,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <link rel="stylesheet" type="text/css" href="style.css">
     <link rel="stylesheet" type="text/css" href="jquery.css">
-    <script src="https://use.fontawesome.com/135faabece.js"></script>
+    <script src="https://kit.fontawesome.com/c3d8b32847.js" crossorigin="anonymous"></script>
     <script src="/socket.io/socket.io.js"></script>
     <title>MinerMan Online</title>
 </head>
@@ -57,7 +57,7 @@
               </div>
               <div>
                 <p class="not-wide">
-                  Be careful, after you place a bomb you cannot walk back over it. If you get caught in an explosion, you die.
+                  Be careful, after you place a bomb you cannot walk back over it. If you get caught in an explosion, you die. <br/> First to win three rounds is the victor!
                 </p>
                 <img src="/Images/tutorial/dying.gif" class="smallgif" />
               </div>
@@ -65,6 +65,7 @@
             </div>
           <div class="tut-bot">
 
+            <div id="falsevalue"></div>
             <input type="text" onSubmit="divKill()" autocomplete="off" id="nameinput" placeholder="Enter Your Username"/>
             <button class="joinbutton" onclick="divKill()">Join the Lobby</button>
 

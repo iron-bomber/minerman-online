@@ -101,13 +101,23 @@ socket.on('playerArray', async playerArray => {
     while (playerList.firstChild) await playerList.removeChild(playerList.firstChild);
     for (let player in players){
         let listItem = await document.createElement('li');
+
+
         let icon = await document.createElement('i');
-        icon.className = playerClasses[`p${Number(player)+1}`];
+
+        if(playerNames[player] == playerNames[0]){
+            icon.setAttribute("class", "fas fa-crown")
+        }else{
+            icon.className = playerClasses[`p${Number(player)+1}`];
+        }
         let socketId = await document.createElement('span');
         if (disconnected.includes(players[player])){
             socketId.innerText = playerNames[player] + ' (disconnected)';
         } else {
-            if(playerNames[player] == myName){
+            if(playerNames[player] == playerNames[0]){
+                socketId.innerText = playerNames[player] + " (host)";
+            }
+            else if(playerNames[player] == myName){
                 socketId.innerText = playerNames[player] + " (you)";
             }else{
                 socketId.innerText = playerNames[player];
@@ -1106,14 +1116,34 @@ document.querySelectorAll("button").forEach( function(item) {
 })
 
 async function divKill(){
+    let found = false;
     myName = await document.getElementById('nameinput').value;
-    let newUser = {
-        id: socket.id,
-        name: myName
+
+    //Search to see if player name already exists
+    for(let i in playerNames){
+        if(myName == playerNames[i]){
+            found = true;
+        }else{
+            found = false;
+        }
     }
-    socket.emit('playerID', newUser);
-    let element = document.getElementById("tutorial");
-    element.remove();
+
+    //If it does, deny entry.
+    if(found){
+        document.getElementById('nameinput').setAttribute("style", "border: 1px solid red;");
+        document.getElementById('nameinput').setAttribute("placeholder", "Name taken, choose another");
+        document.getElementById('falsevalue').innerHTML = "Name taken, choose another";
+    }
+    //If the name is not taken, let them in.
+    else{
+        let newUser = {
+            id: socket.id,
+            name: myName
+        }
+        socket.emit('playerID', newUser);
+        let element = document.getElementById("tutorial");
+        element.remove();
+    }
 }
 
 socket.on('resetMessage', ()=>{
@@ -1122,6 +1152,7 @@ socket.on('resetMessage', ()=>{
         displayRestartMessage = false;
     }, 4000);
 })
+
 // <div class="new-message">
 //     <div class="message-info">
 //         <span class="username">Great Wing</span><span class="timestamp">12:51</span>
@@ -1142,27 +1173,28 @@ socket.on('chatRoom', incomingMessage => {
     messageInfo.className = 'message-info';
     let theUsername = document.createElement('span');
     theUsername.className = 'username';
-    theUsername.innerText = incomingMessage.name;
+    theUsername.innerText = incomingMessage.name + ": ";
     theUsername.style.color = incomingMessage.color;
-    let timeStamp = document.createElement('span');
-    timeStamp.className = 'timestamp';
-    timeStamp.innerText = incomingMessage.time;
+    // let timeStamp = document.createElement('span');
+    // timeStamp.className = 'timestamp';
+    // timeStamp.innerText = incomingMessage.time;
 
     // Message
     let theMessage = document.createElement('div');
     theMessage.className = 'the-message';
-    let messageText = document.createElement('p');
+    let messageText = document.createElement('span');
     messageText.innerText = incomingMessage.message;
 
     // Appending
+    // messageInfo.appendChild(timeStamp);
     messageInfo.appendChild(theUsername);
-    messageInfo.appendChild(timeStamp);
     theMessage.appendChild(messageText);
     newMessage.appendChild(messageInfo);
-    newMessage.appendChild(messageText);
+    messageInfo.appendChild(messageText);
 
     theChatRoom.appendChild(newMessage)
 
+    //Scrolls chat to bottom auto
     theChatRoom.scrollTop = theChatRoom.scrollHeight;
 });
 
@@ -1193,7 +1225,3 @@ function openChatBox(){
 socket.on('turnOnKeyCommands', () => {
     commands();
 })
-
-jQuery(document).ready(function(){
-    jQuery('.scrollbar-macosx').scrollbar();
-});
