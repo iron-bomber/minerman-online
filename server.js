@@ -123,7 +123,7 @@ io.on('connection', async (socket) => {
                             }
                         }
                     }
-                    displayRestartMessage = true;
+                    // displayRestartMessage = true;
                     selectHowManyPlayers();
                 }
             } else {

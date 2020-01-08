@@ -165,6 +165,10 @@ socket.on('playerDisconnected', async disconnectedPlayers => {
 
 socket.on('selectNumOfPlayers', (data) => {
     disconnected = [];
+    playerOneDead = false;
+    playerTwoDead = false;
+    playerThreeDead = false;
+    playerFourDead = false;
     sel = data;
     selectLoop();
 })
@@ -927,6 +931,10 @@ function mainLoop(){
     if(!sound.songPlaying){
         sound.playGameMusic();
     }
+
+    // console.log(playerOneDead, playerTwoDead, playerThreeDead, playerFourDead)
+    // console.log(disconnected)
+    // console.log(displayRestartMessage)
 
     //Clear canvas
     ctx.clearRect(0, 0, 750, 750);
