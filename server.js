@@ -11,6 +11,8 @@ const express = require('express');
 const socket = require('socket.io');
 let gameRunning = false;
 let chatRoom = [];
+let displayRestartMessage = false;
+
 // App setup
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -122,6 +124,7 @@ io.on('connection', async (socket) => {
                             }
                         }
                     }
+                    displayRestartMessage = true;
                     selectHowManyPlayers();
                 }
             } else {
@@ -252,7 +255,11 @@ io.on('connection', async (socket) => {
 let selectNumOfPlayersInterval;
 
 function selectHowManyPlayers (){
-    console.log('select screen');
+    console.log('select screen', displayRestartMessage);
+    if(displayRestartMessage){
+            io.sockets.emit('resetMessage')
+            displayRestartMessage = false;
+    }
     selectNumOfPlayers = true;
     spriteSelect = false;
     gameRunning = false;
@@ -1017,6 +1024,7 @@ function spriteSelectScreen() {
     }, 1000/40)
 
 }
+
 let timesSprite = true;
 function startNewRound() {
     gameRunning = true;
@@ -1106,25 +1114,17 @@ class Startscreen{
                 if(player.position == 4){
                     player.position = 2;
                 }
-                if(player.position == 5){
-                    player.position = 3;
-                }
-                if(player.position == 6){
-                    player.position = 4;
-                }
                 break;
+
             case "a":
-                
                 if(player.position == 2){
                     player.position = 1;
                 }
                 if(player.position == 4){
                     player.position = 3;
                 }
-                if(player.position == 6){
-                    player.position = 5;
-                }
                 break;
+
             case "s":
                 
                 if(player.position == 1){
@@ -1133,13 +1133,8 @@ class Startscreen{
                 else if(player.position == 2){
                     player.position = 4;
                 }
-                else if(player.position == 3){
-                    player.position = 5;
-                }
-                else if(player.position == 4){
-                    player.position = 6;
-                }
                 break;
+
             case "d":
                 
                 if(player.position == 1){
@@ -1148,10 +1143,8 @@ class Startscreen{
                 if(player.position == 3){
                     player.position = 4;
                 }
-                if(player.position == 5){
-                    player.position = 6;
-                }
                 break;
+
             case "spacebar":
                 
                 
@@ -1274,8 +1267,8 @@ class Select{
                         selectNumOfPlayers = false;
                         spriteSelect = true;
                     }
-
                 }
+
                 break;
         }
     }

@@ -217,16 +217,16 @@ ul.chat-user li a:hover{
 }
 
 .player1{
-    color: #ffff00;
+    color: #f6c324;
 }
 .player2{
-    color: #0000ff;
+    color: #0064fa;
 }
 .player3{
-    color: #ff0000;
+    color: #e83232;
 }
 .player4{
-    color: #008000;
+    color: #009632;
 }
 
 .start-btn{
