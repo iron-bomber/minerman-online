@@ -154,10 +154,11 @@ body{
 .right {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start;
+    justify-content: space-between;
     align-items: center;
     height: 100%;
     width: 100%;
+    overflow: hidden;
     /* color: white;
     border: 1px solid white; */
 }
@@ -206,9 +207,6 @@ ul.chat-list {
     list-style: none;
 }
 
-ul.chat-user  {
-    /* margin-bottom: 200px; */
-}
 
 ul.chat-user li {
     border-bottom: none;
@@ -230,6 +228,58 @@ ul.chat-user li a:hover{
 }
 .player4{
     color: #009632;
+}
+
+.chat-room{
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+    overflow-y:auto;
+    width: 95%;
+    height: 650px;
+    position:relative;
+    padding: 10px;
+}
+
+.new-message{
+    border: 1px solid gray;
+    border-radius: 8px;
+    width: 100%;
+    padding: 8px;
+    margin-top: 5px;
+}
+
+.username {
+    font-weight: bold;
+    font-size: 0.9rem;
+    margin-right: 5px;
+}
+
+.timestamp{
+    font-size: 0.6rem;
+}
+
+.the-message{
+    font-size: 0.8rem;
+}
+
+.send-message{
+    margin-top: 5px;
+    margin-bottom: 10px;
+    display: none;
+    justify-content: space-between;
+}
+
+.msg-instruct{
+    display:flex;
+    justify-content: center;
+    height: 40px;
+}
+
+.msg-instruct span{
+    font-weight: bold;
+    font-size: 0.9rem;
 }
 
 .start-btn{

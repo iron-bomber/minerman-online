@@ -75,6 +75,11 @@
           <ul class="chat-list chat-user" id="players">
 
           </ul>
+          <h1>Spectators</h1>
+          <br>
+          <ul class="chat-list chat-user" id="spectators">
+
+          </ul>
         </div>
         <div class="main-game-container">
             <canvas id="main-game-board" width="850" height="850"></canvas>
@@ -86,11 +91,17 @@
           <p>P4: <span id="p4score">0</span></p>
         </div> -->
         <div class='right'>
-          <h1>Spectators</h1>
-          <br>
-          <ul class="chat-list chat-user" id="spectators">
+          <h1>Chat room</h1>
+          <div class="chat-room" id="chatRoom">
 
-          </ul>
+          </div>
+          <div class="send-message" id="sendAMessage">
+            <input type="text" id="newMessage" placeholder="Enter a message" maxlength="150" >
+            <button onclick="sendMessage()">Send</button>
+          </div>
+          <div class="msg-instruct" id="msg-instruct">
+            <span>Press Enter to chat</span>
+          </div>
         </div>
     </section>  
     <!-- <div class ='phone-controls'>

@@ -23,6 +23,7 @@ let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
 let gameReset = false;
 let startScreenControls = false;
 let serverFrameInterval;
+let chatting = false;
 // SPRITE VARS
 let lastPressed = 'down';
 let lastPressed2 = 'ArrowDown';

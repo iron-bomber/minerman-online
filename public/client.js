@@ -6,6 +6,7 @@ let spectators = [];
 let spectatorNames = [];
 let disconnected = [];
 let myName= "";
+let chatMessages = [];
 let displayRestartMessage = false;
 
 let bomberData = {
@@ -420,7 +421,7 @@ function drawIcons(){
     }
 }
 function commands() {
-    if (gameRunning) {
+    if (gameRunning && !chatting) {
         if (players.indexOf(socket.id) != -1){
             document.onkeypress = function(e){
                 if(e.key === "s" || e.key === "S"){
@@ -438,6 +439,9 @@ function commands() {
                 // Drop bomb
                 if(e.keyCode === 32){
                     socket.emit('dropABomb', bomberData.playerID);
+                }
+                if(e.keyCode === 13){
+                    openChatBox();
                 }
             }
             document.onkeyup = function(e){
@@ -459,7 +463,7 @@ function commands() {
                 }
             }
         }
-    } else if (selectNumOfPlayers) {
+    } else if (selectNumOfPlayers && !chatting) {
         console.log(host)
         if (host) {
             //Sending select character controls to server
@@ -495,10 +499,13 @@ function commands() {
                         key: 'spacebar',
                     });
                 }
+                if(e.keyCode === 13){
+                    openChatBox();
+                }
             }
         }
 
-    } else if (spriteSelectScreen) {
+    } else if (spriteSelectScreen && !chatting) {
         if (players.indexOf(socket.id) != -1){
             console.log('startscreen input')
             //Sending select character controls to server
@@ -539,6 +546,15 @@ function commands() {
                         socketID: socket.id
                     });
                 }
+                if(e.keyCode === 13){
+                    openChatBox();
+                }
+            }
+        }
+    } else if (players.indexOf(socket.id) != -1 || spectators.indexOf(socket.id) != -1){
+        document.onkeypress = function(e){
+            if(e.keyCode === 13){
+                sendMessage();
             }
         }
     }
@@ -1100,3 +1116,68 @@ socket.on('resetMessage', ()=>{
         displayRestartMessage = false;
     }, 4000);
 })
+// <div class="new-message">
+//     <div class="message-info">
+//         <span class="username">Great Wing</span><span class="timestamp">12:51</span>
+//     </div>
+//     <div class="the-message">
+//         <p>blah blah blah</p>
+//     </div>
+// </div>
+socket.on('chatRoom', incomingMessage => {    
+    let theChatRoom = document.getElementById('chatRoom');
+
+    // Parent element
+    let newMessage = document.createElement('div');
+    newMessage.className = 'new-message';
+
+    // Info
+    let messageInfo = document.createElement('div');
+    messageInfo.className = 'message-info';
+    let theUsername = document.createElement('span');
+    theUsername.className = 'username';
+    theUsername.innerText = incomingMessage.name;
+    theUsername.style.color = incomingMessage.color;
+    let timeStamp = document.createElement('span');
+    timeStamp.className = 'timestamp';
+    timeStamp.innerText = incomingMessage.time;
+
+    // Message
+    let theMessage = document.createElement('div');
+    theMessage.className = 'the-message';
+    let messageText = document.createElement('p');
+    messageText.innerText = incomingMessage.message;
+
+    // Appending
+    messageInfo.appendChild(theUsername);
+    messageInfo.appendChild(timeStamp);
+    theMessage.appendChild(messageText);
+    newMessage.appendChild(messageInfo);
+    newMessage.appendChild(messageText);
+
+    theChatRoom.appendChild(newMessage)
+});
+
+async function sendMessage(){
+    let theMessage = await document.getElementById('newMessage').value;
+    if (theMessage.length > 0){
+        let newMessage = {
+            id: socket.id,
+            text: theMessage
+        }
+        socket.emit('newMessage', newMessage);
+    }
+    document.getElementById('newMessage').value = "";
+    document.getElementById('sendAMessage').style.display = 'none';
+    document.getElementById('msg-instruct').style.display = 'flex';
+    chatting = false;
+    commands();
+}
+
+function openChatBox(){
+    chatting = true;
+    commands();
+    document.getElementById('sendAMessage').style.display = 'flex';
+    document.getElementById('msg-instruct').style.display = 'none';
+    document.getElementById('newMessage').focus();
+}

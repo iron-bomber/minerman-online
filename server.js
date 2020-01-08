@@ -2,12 +2,15 @@ let gameReset = false;
 let bombIDs = 0;
 const players = [];
 const playerNames = [];
+const playerColors = ['#f6c324', '#0064fa', '#e83232', '#009632'];
 const spectators = [];
 const spectatorNames = [];
+const spectatorColors = [];
 let disconnected = [];
 const express = require('express');
 const socket = require('socket.io');
 let gameRunning = false;
+let chatRoom = [];
 let displayRestartMessage = false;
 
 // App setup
@@ -51,7 +54,6 @@ let startingXYIJ = {
 let mainGameInterval;
 
 let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
-
 
 // // SPRITE VARS
 // // let lastPressed = 'down';
@@ -162,8 +164,13 @@ io.on('connection', async (socket) => {
             console.log(spriteSelect)
             if (spriteSelect){
                 if (players.length >= sel.numOfPlayers ){
+                    let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    while (spectatorColors.includes(newColor) || playerColors.includes(newColor)){
+                        newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    }
                     spectators.push(newPlayer.id);
                     spectatorNames.push(newPlayer.name);
+                    spectatorColors.push(newColor);
                 } else {
                     players.push(newPlayer.id);
                     playerNames.push(newPlayer.name);
@@ -175,12 +182,22 @@ io.on('connection', async (socket) => {
                     players.push(newPlayer.id);
                     playerNames.push(newPlayer.name);
                 } else {
+                    let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    while (spectatorColors.includes(newColor) || playerColors.includes(newColor)){
+                        newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    }
                     spectators.push(newPlayer.id);
                     spectatorNames.push(newPlayer.name);
+                    spectatorColors.push(newColor);
                 }
             } else {
+                let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                while (spectatorColors.includes(newColor) || playerColors.includes(newColor)){
+                    newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                }
                 spectators.push(newPlayer.id);
                 spectatorNames.push(newPlayer.name);
+                spectatorColors.push(newColor);
             }
             let thePlayers = {
                 ids: players,
@@ -196,6 +213,27 @@ io.on('connection', async (socket) => {
         }
     })
     
+
+    socket.on('newMessage', message => {
+        let theTime = new Date().toLocaleTimeString();
+        let theColor;
+        let theName;
+        if (players.includes(message.id)){
+            theColor = playerColors[players.indexOf(message.id)];
+            theName = playerNames[players.indexOf(message.id)];
+        } else {
+            theColor = spectatorColors[spectators.indexOf(message.id)];
+            theName = spectatorNames[spectators.indexOf(message.id)];
+        }
+        let newMessage = {
+            message: message.text,
+            name: theName,
+            color: theColor,
+            time: theTime
+        }
+        chatRoom.push(newMessage);
+        io.sockets.emit('chatRoom', newMessage);
+    })
     //In game controls received from user
     socket.on('bomberData', (bomberData) => {
         g.playerArr[bomberData.playerID].moveDown = bomberData.moveDown;
@@ -213,10 +251,6 @@ io.on('connection', async (socket) => {
                 newBomb.gridPlacer();
                 newBomb.timerExplode();
                 g.playerArr[data].bombAmmo -= 1;
-                // io.sockets.emit('newBombSprite', {
-                //     iGrid: newBomb.iGrid,
-                //     jGrid: newBomb.jGrid,
-                // })
             }
         }   
     })
