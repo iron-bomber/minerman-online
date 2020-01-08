@@ -127,11 +127,12 @@ io.on('connection', async (socket) => {
                 specIds: spectators,
                 specNames: spectatorNames
             };
+            console.log(thePlayers);
             io.sockets.emit('playerArray', (thePlayers));
+            io.to(socket.id).emit('turnOnKeyCommands');
             if (players.length === 1) {
                 selectHowManyPlayers();
             }
-            io.to(socket.id).emit('turnOnKeyCommands');
         }
     })
 
@@ -215,6 +216,7 @@ io.on('connection', async (socket) => {
             let i = spectators.indexOf(socket.id);
             spectators.splice(i, 1);
             spectatorNames.splice(i, 1);
+            spectatorColors.splice(i, 1);
             let thePlayers = {
                 ids: players,
                 names: playerNames,
@@ -300,6 +302,11 @@ function selectHowManyPlayers (){
             io.sockets.emit('resetMessage')
             displayRestartMessage = false;
     }
+    while (players.length < 4 && spectators.length > 0) {
+        players.push(spectators.shift());
+        playerNames.push(spectatorNames.shift());
+        spectatorColors.shift();
+    }
     gameRunning = false;
     spriteSelect = false;
     selectNumOfPlayers = true;
@@ -312,12 +319,6 @@ function selectHowManyPlayers (){
     disconnected = [];
     sel = new Select();
     io.sockets.emit('resetTheGame');
-    while (players.length < 4 && spectators.length > 0) {
-        players.push(spectators[0]);
-        playerNames.push(spectatorNames[0]);
-        spectators.pop();
-        spectatorNames.pop();
-    }
     let thePlayers = {
         ids: players,
         names: playerNames,
