@@ -13,6 +13,37 @@ body{
     justify-content: center;
 }
 
+span{
+    color: white;
+}
+
+.press-enter{
+    padding: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 8px;
+}
+
+.send-button{
+    margin-left: 5px;
+    background-color: rgba(0, 0, 0, 0.6);
+    border-radius: 5px;
+    border: none;
+    color: white;
+}
+
+#newMessage{
+    border-radius: 5px;
+    border: none;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: 5px;
+    padding-left: 8px;
+}
+
 .theP{
     background-color: #32033f;
     border-radius: 5px;
@@ -143,9 +174,9 @@ body{
     align-items: center;
     height: 100%;
     width: 100%;
-    background-color: white;
     color: black;
     flex-grow: 2;
+    padding-top: 16px;
     /* color: white;
     border: 1px solid white; */
 
@@ -234,6 +265,10 @@ ul.chat-user li a:hover{
     width: 95%;
     max-height: 700px;
     padding: 10px;
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
+    border: none;
+    height: 700px;
 }
 
 .new-message{
@@ -243,6 +278,8 @@ ul.chat-user li a:hover{
     padding: 8px;
     margin-top: 5px;
     word-wrap: break-word;
+    background-color: rgba(0, 0, 0, 0.6);
+    color: white;
 }
 
 .username {
@@ -296,6 +333,46 @@ ul.chat-user li a:hover{
 
 .control1 p, .control2 p{
     width: 50px;
+}
+
+.scrollbar-young-passion::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-color: #F5F5F5;
+    border-radius: 10px; 
+}
+
+.scrollbar-young-passion::-webkit-scrollbar {
+    width: 12px;
+    background-color: #F5F5F5; 
+}
+
+.scrollbar-young-passion::-webkit-scrollbar-thumb {
+    border-radius: 10px;
+    -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.1);
+    background-image: -webkit-linear-gradient(linear, left top, right top, from(#ff8177), color-stop(0%, #ff867a),
+    color-stop(21%, #ff8c7f), color-stop(52%, #f99185), color-stop(78%, #cf556c), to(#b12a5b));
+    background-image: -webkit-linear-gradient(top, #f5cc68 0%, #f5cc68 0%, #f5cc68 21%, #ff9f5f 52%, #ff9f5f 78%,
+    #ff9f5f 100%);
+    background-image: linear-gradient(to bottom, #f5cc68 0%, #f5cc68 0%, #f5cc68 21%, #ff9f5f 52%, #ff9f5f 78%,
+    #ff9f5f 100%); 
+}
+
+.scrollbar::-webkit-scrollbar * {
+    background:transparent;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0); 
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar { 
+    display: none; 
+}
+
+#players, #spectators{
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 5px;
 }
 
 /* canvas {
