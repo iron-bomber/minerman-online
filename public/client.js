@@ -420,7 +420,7 @@ function drawIcons(){
     }
 }
 function commands() {
-    if (gameRunning) {
+    if (gameRunning && !chatting) {
         if (players.indexOf(socket.id) != -1){
             document.onkeypress = function(e){
                 if(e.key === "s" || e.key === "S"){
@@ -438,6 +438,9 @@ function commands() {
                 // Drop bomb
                 if(e.keyCode === 32){
                     socket.emit('dropABomb', bomberData.playerID);
+                }
+                if(e.keyCode === 13){
+                    openChatBox();
                 }
             }
             document.onkeyup = function(e){
@@ -459,7 +462,7 @@ function commands() {
                 }
             }
         }
-    } else if (selectNumOfPlayers) {
+    } else if (selectNumOfPlayers && !chatting) {
         console.log(host)
         if (host) {
             //Sending select character controls to server
@@ -495,10 +498,13 @@ function commands() {
                         key: 'spacebar',
                     });
                 }
+                if(e.keyCode === 13){
+                    openChatBox();
+                }
             }
         }
 
-    } else if (spriteSelectScreen) {
+    } else if (spriteSelectScreen && !chatting) {
         if (players.indexOf(socket.id) != -1){
             console.log('startscreen input')
             //Sending select character controls to server
@@ -539,6 +545,15 @@ function commands() {
                         socketID: socket.id
                     });
                 }
+                if(e.keyCode === 13){
+                    openChatBox();
+                }
+            }
+        }
+    } else if (players.indexOf(socket.id) != -1 || spectators.indexOf(socket.id) != -1){
+        document.onkeypress = function(e){
+            if(e.keyCode === 13){
+                sendMessage();
             }
         }
     }
@@ -1144,10 +1159,24 @@ socket.on('chatRoom', incomingMessage => {
 
 async function sendMessage(){
     let theMessage = await document.getElementById('newMessage').value;
-    document.getElementById('newMessage').value = "";
-    let newMessage = {
-        id: socket.id,
-        text: theMessage
+    if (theMessage.length > 0){
+        let newMessage = {
+            id: socket.id,
+            text: theMessage
+        }
+        socket.emit('newMessage', newMessage);
     }
-    socket.emit('newMessage', newMessage);
+    document.getElementById('newMessage').value = "";
+    document.getElementById('sendAMessage').style.display = 'none';
+    document.getElementById('msg-instruct').style.display = 'flex';
+    chatting = false;
+    commands();
+}
+
+function openChatBox(){
+    chatting = true;
+    commands();
+    document.getElementById('sendAMessage').style.display = 'flex';
+    document.getElementById('msg-instruct').style.display = 'none';
+    document.getElementById('newMessage').focus();
 }

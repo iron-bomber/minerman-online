@@ -236,9 +236,10 @@ ul.chat-user li a:hover{
     justify-content: flex-end;
     align-items: flex-start;
     overflow-y:auto;
-    width: 90%;
+    width: 95%;
     height: 650px;
     position:relative;
+    padding: 10px;
 }
 
 .new-message{
@@ -266,8 +267,19 @@ ul.chat-user li a:hover{
 .send-message{
     margin-top: 5px;
     margin-bottom: 10px;
-    display: flex;
+    display: none;
     justify-content: space-between;
+}
+
+.msg-instruct{
+    display:flex;
+    justify-content: center;
+    height: 40px;
+}
+
+.msg-instruct span{
+    font-weight: bold;
+    font-size: 0.9rem;
 }
 
 .start-btn{
