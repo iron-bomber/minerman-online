@@ -231,14 +231,8 @@ ul.chat-user li a:hover{
 }
 
 .chat-room{
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-end;
-    align-items: flex-start;
-    overflow:auto;
     width: 95%;
-    height: 650px;
-    position:relative;
+    max-height: 700px;
     padding: 10px;
 }
 
