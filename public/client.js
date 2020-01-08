@@ -66,7 +66,6 @@ socket.on('resetTheGame', () => {
 
 // Server tells client they are host
 socket.on('youHost', () => {
-    console.log('you are the host')
     host = true;
     gameRunning = false;
     spriteSelectScreen = false;
@@ -462,55 +461,49 @@ function commands() {
                 }
             }
         }
-    } else if (selectNumOfPlayers && !chatting) {
-        console.log(host)
-        if (host) {
+    } else if (selectNumOfPlayers && !chatting && host) {
             //Sending select character controls to server
-            document.onkeypress = function(e){
-                if(e.key === "s" || e.key === "S"){
-                    console.log('emit s')
-                    socket.emit('selectCommands',
-                    {
-                        key: 's'
-                    });
-                }
-                if(e.key === "w" || e.key === "W"){
-                    socket.emit('selectCommands',
-                    {
-                        key: 'w'
-                    });
-                }
-                if(e.key === "a" || e.key === "A"){
-                    socket.emit('selectCommands',
-                    {
-                        key: 'a'
-                    });
-                }
-                if(e.key === "d" || e.key === "D"){
-                    socket.emit('selectCommands',
-                    {
-                        key: 'd'
-                    });
-                }
-                if(e.keyCode === 32) {
-                    socket.emit('selectCommands',
-                    {
-                        key: 'spacebar',
-                    });
-                }
-                if(e.keyCode === 13){
-                    openChatBox();
-                }
+        document.onkeypress = function(e){
+            if(e.key === "s" || e.key === "S"){
+                socket.emit('selectCommands',
+                {
+                    key: 's'
+                });
+            }
+            if(e.key === "w" || e.key === "W"){
+                socket.emit('selectCommands',
+                {
+                    key: 'w'
+                });
+            }
+            if(e.key === "a" || e.key === "A"){
+                socket.emit('selectCommands',
+                {
+                    key: 'a'
+                });
+            }
+            if(e.key === "d" || e.key === "D"){
+                socket.emit('selectCommands',
+                {
+                    key: 'd'
+                });
+            }
+            if(e.keyCode === 32) {
+                socket.emit('selectCommands',
+                {
+                    key: 'spacebar',
+                });
+            }
+            if(e.keyCode === 13){
+                openChatBox();
             }
         }
 
     } else if (spriteSelectScreen && !chatting) {
         if (players.indexOf(socket.id) != -1){
-            console.log('startscreen input')
             //Sending select character controls to server
             document.onkeypress = function(e){
                 if(e.key === "s" || e.key === "S"){
-                    console.log('startscreen s')
                     socket.emit('selectingSprite',
                     {
                         key: 's',
@@ -551,11 +544,20 @@ function commands() {
             }
         }
     } else if (players.indexOf(socket.id) != -1 || spectators.indexOf(socket.id) != -1){
-        document.onkeypress = function(e){
-            if(e.keyCode === 13){
-                sendMessage();
+        if (chatting){
+            document.onkeypress = function(e){
+                if(e.keyCode === 13){
+                    sendMessage();
+                }
+            }
+        } else {
+            document.onkeypress = function(e){
+                if(e.keyCode === 13){
+                    openChatBox();
+                }
             }
         }
+
     }
 }
 
@@ -663,7 +665,6 @@ function drawMap() {
 
 // Sprite stuff
 function spriteChooser(){
-    console.log('choosing sprites')
     switch (s.p1.position){
         case 1:
             p11 = p1Left;
@@ -799,7 +800,6 @@ socket.on('gameStarted', (start) => {
     s = start;
     spriteChooser();
     createSprites();
-    console.log('735 ',spriteArr);
 })
 
 function createSprites() {
@@ -1035,7 +1035,6 @@ class Sound{
     }
 
     pauseGameMusic(){
-        console.log('pausing')
         let it = document.getElementById('gameMusic')
         it.pause();
         it.currentTime = 0;
@@ -1103,7 +1102,6 @@ async function divKill(){
         id: socket.id,
         name: myName
     }
-    console.log('new user ', newUser);
     socket.emit('playerID', newUser);
     let element = document.getElementById("tutorial");
     element.remove();
@@ -1180,3 +1178,7 @@ function openChatBox(){
     document.getElementById('msg-instruct').style.display = 'none';
     document.getElementById('newMessage').focus();
 }
+
+socket.on('turnOnKeyCommands', () => {
+    commands();
+})

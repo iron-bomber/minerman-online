@@ -210,6 +210,7 @@ io.on('connection', async (socket) => {
             if (players.length === 1) {
                 selectHowManyPlayers();
             }
+            io.to(socket.id).emit('turnOnKeyCommands');
         }
     })
     
@@ -272,7 +273,7 @@ io.on('connection', async (socket) => {
 
 let selectNumOfPlayersInterval;
 
-function selectHowManyPlayers (){
+async function selectHowManyPlayers (){
     console.log('select screen', displayRestartMessage);
     if(displayRestartMessage){
             io.sockets.emit('resetMessage')

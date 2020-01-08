@@ -235,7 +235,7 @@ ul.chat-user li a:hover{
     flex-direction: column;
     justify-content: flex-end;
     align-items: flex-start;
-    overflow-y:auto;
+    overflow:auto;
     width: 95%;
     height: 650px;
     position:relative;
@@ -248,6 +248,7 @@ ul.chat-user li a:hover{
     width: 100%;
     padding: 8px;
     margin-top: 5px;
+    word-wrap: break-word;
 }
 
 .username {
