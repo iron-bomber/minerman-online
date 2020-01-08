@@ -23,12 +23,16 @@ const server = app.listen(PORT, () => {
 //Static files
 app.use(express.static('public'));
 
-// // Socket setup
+// Socket setup
 let io = socket(server);
+
+
 let playerOneDead = false;
 let playerTwoDead = false;
 let playerThreeDead = false;
 let playerFourDead = false;
+
+// Death Coordinates
 let playerOneX;
 let playerOneY;
 let playerTwoX;
@@ -37,10 +41,13 @@ let playerThreeX;
 let playerThreeY;
 let playerFourX;
 let playerFourY;
+
+// Players in game
 let numOfPlayers
 let playersLeft;
 let gameComplete = false;
 let sel;
+
 // Emits different screens to players
 let selectNumOfPlayers = true;
 let spriteSelect = false;
@@ -51,117 +58,32 @@ let startingXYIJ = {
     p3: [770, 70, 15, 1],
     p4: [70, 770, 1, 15]
 }
+
 let mainGameInterval;
 
 let playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
 
-// // SPRITE VARS
-// // let lastPressed = 'down';
-// // let lastPressed2 = 'ArrowDown';
 io.on('connection', async (socket) => {
     console.log('connection made', new Date());
     console.log(socket.id);
+
     let thePlayers = {
         ids: players,
         names: playerNames,
         specIds: spectators,
         specNames: spectatorNames
     };
+
     io.sockets.emit('playerArray', (thePlayers));
     if (gameRunning){
         io.to(socket.id).emit('allData', allData);
         io.to(socket.id).emit('gameStarted', s);
     }
-    // Select screen controls received from user
-    socket.on('selectingSprite', (select) => {
-        if (players.indexOf(select.socketID) < sel.numOfPlayers){
-            s.movePosition(s[`p${players.indexOf(select.socketID)+1}`], select.key);
-        }
-    })
 
-    socket.on('disconnect', () => {
-        if (players.indexOf(socket.id) != -1){
-            if (gameRunning){
-                disconnected.push(socket.id);
-                io.sockets.emit('playerDisconnected', disconnected);
-                switch(players.indexOf(socket.id)){
-                    case 0:
-                        if (!playerOneDead){
-                            g.playerArr.splice(0, 1, '')
-                            playersLeft--;
-                            playerOneDead = true;
-                        }
-                        break;
-                    case 1:
-                        if (!playerTwoDead){
-                            g.playerArr.splice(1, 1, '')
-                            playersLeft--;
-                            playerTwoDead = true;
-                        }
-                        break;
-                    case 2:
-                        if (!playerThreeDead){
-                            g.playerArr.splice(2, 1, '')
-                            playersLeft--;
-                            playerThreeDead = true;
-                        }
-                        break;
-                    case 3:
-                        if (!playerFourDead){
-                            g.playerArr.splice(3, 1, '')
-                            playersLeft--;
-                            playerFourDead = true;
-                        }
-                        break;
-                }
-                if (disconnected.length >= sel.numOfPlayers - 1){
-                    for (let i in disconnected){
-                        for (let j in players){
-                            if (players[j] == disconnected[i]){
-                                players.splice(j, 1);
-                                playerNames.splice(j, 1)
-                            }
-                        }
-                    }
-                    // displayRestartMessage = true;
-                    selectHowManyPlayers();
-                }
-            } else {
-                let i = players.indexOf(socket.id);
-                players.splice(i, 1);
-                playerNames.splice(i, 1);
-                if (spectators.length > 0){
-                    players.push(spectators[0]);
-                    playerNames.push(spectatorNames[0]);
-                    spectators.pop();
-                    spectatorNames.pop();
-                }
-                let thePlayers = {
-                    ids: players,
-                    names: playerNames,
-                    specIds: spectators,
-                    specNames: spectatorNames
-                };
-                io.sockets.emit('playerArray', thePlayers);
-                selectHowManyPlayers();
-            }
-        } else if (spectators.indexOf(socket.id) != -1){
-            let i = spectators.indexOf(socket.id);
-            spectators.splice(i, 1);
-            spectatorNames.splice(i, 1);
-            let thePlayers = {
-                ids: players,
-                names: playerNames,
-                specIds: spectators,
-                specNames: spectatorNames
-            };
-            io.sockets.emit('playerArray', thePlayers);
-        }
-    })
-
+    // User types a name and clicks join
     socket.on('playerID', (newPlayer)=>{
-        if (!players.includes(newPlayer.id)){
-            console.log(spriteSelect)
+        // Blocks double sign in
+        if (!players.includes(newPlayer.id) && !spectators.includes(newPlayer.id)){
             if (spriteSelect){
                 if (players.length >= sel.numOfPlayers ){
                     let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
@@ -206,14 +128,108 @@ io.on('connection', async (socket) => {
                 specNames: spectatorNames
             };
             io.sockets.emit('playerArray', (thePlayers));
-            console.log('85 ', players.length)
             if (players.length === 1) {
                 selectHowManyPlayers();
             }
             io.to(socket.id).emit('turnOnKeyCommands');
         }
     })
+
+    socket.on('disconnect', () => {
+        // If disconnected user is in the player array
+        if (players.indexOf(socket.id) != -1){
+            if (gameRunning){
+                disconnected.push(socket.id);
+                io.sockets.emit('playerDisconnected', disconnected);
+                // Removes disconnected player from the current game
+                switch(players.indexOf(socket.id)){
+                    case 0:
+                        if (!playerOneDead){
+                            playerOneDead = true;
+                            m.bomberLocations[g.playerArr[0].iGrid][g.playerArr[0].jGrid] = 'free';
+                            g.playerArr.splice(0, 1, '')
+                            playersLeft--;    
+                        }
+                        break;
+                    case 1:
+                        if (!playerTwoDead){
+                            playerTwoDead = true;
+                            m.bomberLocations[g.playerArr[1].iGrid][g.playerArr[1].jGrid] = 'free';
+                            g.playerArr.splice(1, 1, '')
+                            playersLeft--;    
+                        }
+                        break;
+                    case 2:
+                        if (!playerThreeDead){
+                            playerThreeDead = true;
+                            m.bomberLocations[g.playerArr[2].iGrid][g.playerArr[2].jGrid] = 'free';
+                            g.playerArr.splice(2, 1, '')
+                            playersLeft--;    
+                        }
+                        break;
+                    case 3:
+                        if (!playerFourDead){
+                            playerFourDead = true;
+                            m.bomberLocations[g.playerArr[3].iGrid][g.playerArr[3].jGrid] = 'free';
+                            g.playerArr.splice(3, 1, '')
+                            playersLeft--;   
+                        }
+                        break;
+                }
+                // Restarts the lobby if there are not enough players left
+                if (disconnected.length >= sel.numOfPlayers - 1){
+                    for (let i in disconnected){
+                        for (let j in players){
+                            if (players[j] == disconnected[i]){
+                                players.splice(j, 1);
+                                playerNames.splice(j, 1)
+                            }
+                        }
+                    }
+                    // displayRestartMessage = true;
+                    selectHowManyPlayers();
+                }
+            // Player disconnected before the game started
+            } else {
+                let i = players.indexOf(socket.id);
+                players.splice(i, 1);
+                playerNames.splice(i, 1);
+                // Moves spectator into player array to fill spot
+                if (spectators.length > 0){
+                    players.push(spectators[0]);
+                    playerNames.push(spectatorNames[0]);
+                    spectators.pop();
+                    spectatorNames.pop();
+                }
+                let thePlayers = {
+                    ids: players,
+                    names: playerNames,
+                    specIds: spectators,
+                    specNames: spectatorNames
+                };
+                io.sockets.emit('playerArray', thePlayers);
+                selectHowManyPlayers();
+            }
+        // If disconnected user is in the spectator array
+        } else if (spectators.indexOf(socket.id) != -1){
+            let i = spectators.indexOf(socket.id);
+            spectators.splice(i, 1);
+            spectatorNames.splice(i, 1);
+            let thePlayers = {
+                ids: players,
+                names: playerNames,
+                specIds: spectators,
+                specNames: spectatorNames
+            };
+            io.sockets.emit('playerArray', thePlayers);
+        }
+    })
     
+    socket.on('selectingSprite', (select) => {
+        if (players.indexOf(select.socketID) < sel.numOfPlayers){
+            s.movePosition(s[`p${players.indexOf(select.socketID)+1}`], select.key);
+        }
+    })
 
     socket.on('newMessage', message => {
         let theTime = new Date().toLocaleTimeString();
@@ -235,14 +251,16 @@ io.on('connection', async (socket) => {
         chatRoom.push(newMessage);
         io.sockets.emit('chatRoom', newMessage);
     })
-    //In game controls received from user
+
+    // In game controls received from user
     socket.on('bomberData', (bomberData) => {
         g.playerArr[bomberData.playerID].moveDown = bomberData.moveDown;
         g.playerArr[bomberData.playerID].moveLeft = bomberData.moveLeft;
         g.playerArr[bomberData.playerID].moveUp = bomberData.moveUp;
         g.playerArr[bomberData.playerID].moveRight = bomberData.moveRight;
-        emitSprite(bomberData.lastPressed, bomberData.playerID)
+        emitSprite(bomberData.lastPressed, bomberData.playerID);
     });
+
     socket.on('dropABomb', (data) => {
         if(g.playerArr[data].bombAmmo > 0){
             if (m.bombMap[g.playerArr[data].iGrid][g.playerArr[data].jGrid] === 'free') {
@@ -275,13 +293,16 @@ let selectNumOfPlayersInterval;
 
 function selectHowManyPlayers (){
     console.log('select screen', displayRestartMessage);
+    for(let i = 1; i <= 4; i++) {       
+        playerScores[`p${i}`] = 0;      
+    }
     if(displayRestartMessage){
             io.sockets.emit('resetMessage')
             displayRestartMessage = false;
     }
-    selectNumOfPlayers = true;
-    spriteSelect = false;
     gameRunning = false;
+    spriteSelect = false;
+    selectNumOfPlayers = true;
     timesSprite = true;
     gameComplete = false;
     clearInterval(mainGameInterval);
@@ -314,7 +335,6 @@ function selectHowManyPlayers (){
     }, 1000/30)
     io.to(`${players[0]}`).emit('youHost');
 }
-// //Player one
 
 class Bomb {
     constructor(owner, iGrid, jGrid, power, bombID) {
@@ -938,8 +958,9 @@ function newGame() {
                 }
             }
             selectHowManyPlayers();
+        } else {
+            selectHowManyPlayers();
         }
-        selectHowManyPlayers();
     }, 3000)
 }
 
@@ -1153,9 +1174,7 @@ class Startscreen{
                     player.position = 4;
                 }
                 break;
-
             case "d":
-                
                 if(player.position == 1){
                     player.position = 2;
                 }
@@ -1194,18 +1213,6 @@ class Startscreen{
     }
 }
 
-
-
-// function restartSession(){
-//     for(let i = 0; i < g.playerArr.length; i++) {       
-//         playerScores[`p${i+1}`] = 0;      
-//     }
-//     s = new Startscreen();
-//     gameRunning = false;
-//     gameComplete = false;
-//     stopMainLoop = true;
-//     startLoop();  
-// }
 
 let s = new Startscreen();
 

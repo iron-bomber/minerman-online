@@ -35,6 +35,7 @@ socket.on('spriteSelectScreen', (start) => {
 
 
 socket.on('resetTheGame', () => {
+    clearInterval(sendDataInterval);
     gameRunning = false;
     sound.pauseGameMusic()
     spriteSelectScreen = false;
@@ -45,22 +46,9 @@ socket.on('resetTheGame', () => {
     playerTwoDead = false;
     playerThreeDead = false;
     playerFourDead = false;
-    if (disconnected.includes(players[0])){
-        playerOneDead = true;
-    }
-    if (disconnected.includes(players[1])){
-        playerTwoDead = true;
-    }
-    if (disconnected.includes(players[2])){
-        playerThreeDead = true;
-    }
-    if (disconnected.includes(players[3])){
-        playerFourDead = true;
-    }
     playerScores = {p1: 0, p2: 0, p3: 0, p4: 0};
     gameReset = false;
     startScreenControls = false;
-    clearInterval(sendDataInterval);
     spriteArr = [];
 })
 
@@ -138,7 +126,7 @@ socket.on('playerArray', async playerArray => {
 
 socket.on('playerDisconnected', async disconnectedPlayers => {
     disconnected = disconnectedPlayers;
-    if (disconnected.length > 0){
+    if (disconnected.length > 0 && disconnected.length < playerArr.length - 1){
         let el = await document.getElementById('players');
         while (el.firstChild) await el.removeChild(el.firstChild);
         for (let player in players){
@@ -163,11 +151,6 @@ socket.on('playerDisconnected', async disconnectedPlayers => {
 })
 
 socket.on('selectNumOfPlayers', (data) => {
-    disconnected = [];
-    playerOneDead = false;
-    playerTwoDead = false;
-    playerThreeDead = false;
-    playerFourDead = false;
     sel = data;
     selectLoop();
 })
@@ -1092,12 +1075,12 @@ socket.on('powerUp', ()=>{
 
 
 //Player score socket updates
-socket.on('playerScores', (data)=>{
-    document.getElementById('p1score').innerHtml = data.p1
-    document.getElementById('p2score').innerHtml = data.p2
-    document.getElementById('p3score').innerHtml = data.p3
-    document.getElementById('p4score').innerHtml = data.p4
-})
+// socket.on('playerScores', (data)=>{
+    // document.getElementById('p1score').innerHtml = data.p1
+    // document.getElementById('p2score').innerHtml = data.p2
+    // document.getElementById('p3score').innerHtml = data.p3
+    // document.getElementById('p4score').innerHtml = data.p4
+// })
 
 document.querySelectorAll("button").forEach( function(item) {
     item.addEventListener('focus', function() {
