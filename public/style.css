@@ -46,6 +46,14 @@ span{
     padding-left: 8px;
 }
 
+.new-message{
+    margin-bottom: 5px;
+}
+
+.username{
+    font-size: 20px;
+}
+
 .theP{
     background-color: #32033f;
     border-radius: 5px;
@@ -253,6 +261,10 @@ ul.chat-user li a:hover{
     color: #6a6a6a;
 }
 
+.fa-crown{
+    color: #f6c324
+}
+
 .player1{
     color: #f6c324;
 }
@@ -270,26 +282,15 @@ ul.chat-user li a:hover{
     width: 95%;
     max-height: 700px;
     padding: 10px;
-    background-color: rgba(0, 0, 0, 0.3);
+    background-color: rgba(0, 0, 0, 0.6);
     border-radius: 5px;
     border: none;
     height: 700px;
 }
 
-.new-message{
-    border: 1px solid gray;
-    border-radius: 8px;
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    word-wrap: break-word;
-    background-color: rgba(0, 0, 0, 0.6);
-    color: white;
-}
-
 .username {
     font-weight: bold;
-    font-size: 0.9rem;
+    font-size: 1.1rem;
     margin-right: 5px;
 }
 
@@ -378,6 +379,11 @@ ul.chat-user li a:hover{
     border: none;
     padding: 5px;
     margin: 5px;
+}
+
+#falsevalue{
+    font-size: 20px;
+    font-weight: bold;
 }
 
 /* canvas {
