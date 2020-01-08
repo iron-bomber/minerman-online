@@ -610,13 +610,58 @@ function drawBomb(bomb){
     bomb.bombframeCounter++;
 }
 
-//Draw explosion
+// function drawFloor() {
+//     switch(map){
+//         case "ruins":
+//             ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
+//             break;
+//         case "caves":
+//             break;
+//         case "fields":
+//             break;
+//         default:
+//             break;
+//     }
+
+// }
+
+// function drawWall() {
+//     switch(map){
+//         case "ruins":
+//             ctx.drawImage(rock, 256, 128, 64, 64, xCoord, yCoord, 50, 50);
+//             break;
+//         case "caves":
+//             break;
+//         case "fields":
+//             break;
+//         default:
+//             break;
+//     }
+// }
+
+// function drawBrick(){
+//     switch(map){
+//         case "ruins":
+//             ctx.drawImage(rock, 0, 128, 64, 64, xCoord, yCoord, 50, 50);
+//             break;
+//         case "caves":
+//             break;
+//         case "fields":
+//             break;
+//         default:
+//             break;
+//     }
+// }
 
 function drawMap() {
     let xCoord = 0;
     let yCoord = 0;
     for(let i = 0; i < m.bombMap.length; i++) {
+        //Drawing everything on map, including powerups
         for (let j = 0; j < m.bombMap.length; j++) {
+
+
+            //Draw Floor walls and bricks
             if (m.bombMap[i][j] === 'wall') {
                 ctx.drawImage(rock, 256, 128, 64, 64, xCoord, yCoord, 50, 50);
                 xCoord += 50;
@@ -625,10 +670,12 @@ function drawMap() {
                 xCoord += 50;
             }else if (typeof m.bombMap[i][j] === 'object') {
                 ctx.drawImage(rock, 128, 64, 64, 64, xCoord, yCoord, 50, 50);
-                //bomb Gray
                 drawBomb(m.bombMap[i][j])
                 // ctx.drawImage(bombSprites[3], 0, 0, 16, 16, xCoord, yCoord, 50, 50);
                 xCoord += 50;
+            
+
+
             } else if (typeof m.bombMap[i][j] === 'number') {
                 // ctx.fillStyle = 'green';
                 // ctx.fillRect(xCoord, yCoord, 50, 50);
