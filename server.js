@@ -273,7 +273,7 @@ io.on('connection', async (socket) => {
 
 let selectNumOfPlayersInterval;
 
-async function selectHowManyPlayers (){
+function selectHowManyPlayers (){
     console.log('select screen', displayRestartMessage);
     if(displayRestartMessage){
             io.sockets.emit('resetMessage')
