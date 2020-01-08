@@ -80,6 +80,7 @@ let playerClasses = {
 
 // Server sends updated player array
 socket.on('playerArray', async playerArray => {
+    console.log(playerArray);
     players = playerArray.ids;
     playerNames = playerArray.names;
     spectators = playerArray.specIds;
@@ -448,6 +449,12 @@ function commands() {
                     bomberData.lastPressed = 'right';
                 }
             }
+        } else {
+            document.onkeypress = function(e){
+                if(e.keyCode === 13){
+                    openChatBox();
+                }
+            }
         }
     } else if (selectNumOfPlayers && !chatting && host) {
             //Sending select character controls to server
@@ -486,7 +493,6 @@ function commands() {
                 openChatBox();
             }
         }
-
     } else if (spriteSelectScreen && !chatting) {
         if (players.indexOf(socket.id) != -1){
             //Sending select character controls to server
@@ -530,6 +536,12 @@ function commands() {
                     openChatBox();
                 }
             }
+        } else {
+            document.onkeypress = function(e){
+                if(e.keyCode === 13){
+                    openChatBox();
+                }
+            }
         }
     } else if (players.indexOf(socket.id) != -1 || spectators.indexOf(socket.id) != -1){
         if (chatting){
@@ -545,7 +557,6 @@ function commands() {
                 }
             }
         }
-
     }
 }
 
@@ -1174,6 +1185,7 @@ function openChatBox(){
 }
 
 socket.on('turnOnKeyCommands', () => {
+    console.log('key commands')
     commands();
 })
 
