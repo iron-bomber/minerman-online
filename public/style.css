@@ -206,9 +206,6 @@ ul.chat-list {
     list-style: none;
 }
 
-ul.chat-user  {
-    /* margin-bottom: 200px; */
-}
 
 ul.chat-user li {
     border-bottom: none;
@@ -220,16 +217,16 @@ ul.chat-user li a:hover{
 }
 
 .player1{
-    color: yellow;
+    color: #ffff00;
 }
 .player2{
-    color: blue;
+    color: #0000ff;
 }
 .player3{
-    color: red;
+    color: #ff0000;
 }
 .player4{
-    color: green;
+    color: #008000;
 }
 
 .start-btn{

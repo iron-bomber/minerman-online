@@ -2,13 +2,15 @@ let gameReset = false;
 let bombIDs = 0;
 const players = [];
 const playerNames = [];
+const playerColors = [];
 const spectators = [];
 const spectatorNames = [];
+const spectatorColors = [];
 let disconnected = [];
 const express = require('express');
 const socket = require('socket.io');
 let gameRunning = false;
-
+let chatRoom = [];
 // App setup
 const app = express();
 const PORT = process.env.PORT || 3000
@@ -160,11 +162,21 @@ io.on('connection', async (socket) => {
             console.log(spriteSelect)
             if (spriteSelect){
                 if (players.length >= sel.numOfPlayers ){
+                    let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    while (spectatorColors.includes(newColor)){
+                        newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    }
                     spectators.push(newPlayer.id);
                     spectatorNames.push(newPlayer.name);
+                    spectatorColors.push(newColor);
                 } else {
+                    let newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    while (playerColors.includes(newColor)){
+                        newColor = '#' + Math.floor(Math.random() * 0xFFFFFF).toString(16);
+                    }
                     players.push(newPlayer.id);
                     playerNames.push(newPlayer.name);
+                    playerColors.push(newColor);
                 }
                 io.to(socket.id).emit('selectNumOfPlayers', sel);
                 io.to(socket.id).emit('selectYourSprite');
@@ -186,7 +198,9 @@ io.on('connection', async (socket) => {
                 specIds: spectators,
                 specNames: spectatorNames
             };
+            chatRoom.colors.push(newColor);
             io.sockets.emit('playerArray', (thePlayers));
+            io.sockets.emit('chatRoom', chatRoom);
             console.log('85 ', players.length)
             if (players.length === 1) {
                 selectHowManyPlayers();
@@ -194,6 +208,11 @@ io.on('connection', async (socket) => {
         }
     })
     
+
+    socket.on('newMessage', message => {
+        message.timestamp = Date.now();
+        chatRoom.messages.push(message);
+    })
     //In game controls received from user
     socket.on('bomberData', (bomberData) => {
         g.playerArr[bomberData.playerID].moveDown = bomberData.moveDown;
@@ -211,10 +230,6 @@ io.on('connection', async (socket) => {
                 newBomb.gridPlacer();
                 newBomb.timerExplode();
                 g.playerArr[data].bombAmmo -= 1;
-                // io.sockets.emit('newBombSprite', {
-                //     iGrid: newBomb.iGrid,
-                //     jGrid: newBomb.jGrid,
-                // })
             }
         }   
     })
