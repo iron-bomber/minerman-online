@@ -1145,6 +1145,8 @@ socket.on('chatRoom', incomingMessage => {
     newMessage.appendChild(messageText);
 
     theChatRoom.appendChild(newMessage)
+
+    theChatRoom.scrollTop = theChatRoom.scrollHeight;
 });
 
 async function sendMessage(){
@@ -1174,3 +1176,7 @@ function openChatBox(){
 socket.on('turnOnKeyCommands', () => {
     commands();
 })
+
+jQuery(document).ready(function(){
+    jQuery('.scrollbar-macosx').scrollbar();
+});
