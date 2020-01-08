@@ -163,6 +163,7 @@ socket.on('playerDisconnected', async disconnectedPlayers => {
 })
 
 socket.on('selectNumOfPlayers', (data) => {
+    disconnected = [];
     sel = data;
     selectLoop();
 })
